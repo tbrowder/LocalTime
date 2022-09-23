@@ -1,0 +1,11 @@
+use Test;
+use LocalTime;
+
+my $o;
+lives-ok {
+    $o = LocalTime.new: :year(2022);
+}
+is $o.year, 2022;
+is $o.Str, "2022-01-01T00:00:00.00";
+
+done-testing;

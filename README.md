@@ -3,7 +3,7 @@
 NAME
 ====
 
-LocalTime - blah blah blah
+**LocalTime** - A clone of class **DateTime** with a different default formatter
 
 SYNOPSIS
 ========
@@ -15,7 +15,9 @@ use LocalTime;
 DESCRIPTION
 ===========
 
-LocalTime is ...
+**LocalTime** is a subclass of the Raku **DateTime** class and was created to either add a local timezone abbreviation to a time string or show no timezone information at all if no abbreviation is available.
+
+Curtently only US abbreviations are available but a future modification will add others (perhaps in other languages also).
 
 AUTHOR
 ======

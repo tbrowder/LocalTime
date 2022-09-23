@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-LocalTime - blah blah blah
+B<LocalTime> - A clone of class B<DateTime> with a different default formatter
 
 =head1 SYNOPSIS
 
@@ -14,7 +14,12 @@ use LocalTime;
 
 =head1 DESCRIPTION
 
-LocalTime is ...
+B<LocalTime> is a subclass of the Raku B<DateTime> class and was created
+to either add a local timezone abbreviation to a time string or show
+no timezone information at all if no abbreviation is available.
+
+Curtently only US abbreviations are available but a future modification
+will add others (perhaps in other languages also).
 
 =head1 AUTHOR
 

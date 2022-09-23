@@ -6,18 +6,22 @@
   "build-depends": [
   ],
   "depends": [
+    "DateTime::US:ver<0.1.0>"
   ],
-  "description": "blah blah blah",
+  "description": "A clone of class DateTime with a different default formatter",
   "license": "Artistic-2.0",
   "name": "LocalTime",
   "perl": "6.d",
   "provides": {
-    "LocalTime": "lib/LocalTime.rakumod"
+    "LocalTime": "lib/LocalTime.rakumod",
+    "tmp::LocalTime": "lib/tmp/LocalTime.rakumod",
+    "tmp::Stem": "lib/tmp/Stem.rakumod"
   },
   "resources": [
   ],
   "source-url": "https://github.com/tbrowder/LocalTime.git",
   "tags": [
+    "timezone tz data time localtime us"
   ],
   "test-depends": [
   ],

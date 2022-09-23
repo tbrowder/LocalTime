@@ -19,14 +19,14 @@ use DateTime::US; # to adjust for DST if applicable and use US abbreviations
 # New formatters:
 my $lt-format1 = sub ($self, :$tz-abbrev) {
     # use local timezone abbreviation
-    sprintf "%04d-%02d-%02dT%02d:%02d:%05.2f {$tz-abbrev}", 
+    sprintf "%04d-%02d-%02dT%02d:%02d:%02d {$tz-abbrev}", 
         .year, .month, .day, .hour, .minute, .second
         given $self;
 };
 
 my $lt-format2 = sub ($self) {
     # use NO local timezone abbreviation
-    sprintf "%04d-%02d-%02dT%02d:%02d:%05.2f", 
+    sprintf "%04d-%02d-%02dT%02d:%02d:%02d", 
         .year, .month, .day, .hour, .minute, .second
         given $self;
 };
@@ -34,8 +34,10 @@ my $lt-format2 = sub ($self) {
 method new(:$tz-abbrev, |c) {
     if not $tz-abbrev.defined {
         return self.DateTime::new(:formatter($lt-format2), |c); # a normal instantiation is expected, otherwise an exception is thrown
-        #return self.DateTime::new(|c); # a normal instantiation is expected, otherwise an exception is thrown
     }
+
+    # get the correct offset in seconds from UTC for the TZ
+
     self.DateTime::new(|c); 
 }
 

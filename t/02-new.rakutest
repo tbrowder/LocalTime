@@ -3,9 +3,28 @@ use LocalTime;
 
 my $o;
 lives-ok {
+    $o = DateTime.new: :year(2022);
+}
+is $o.year, 2022;
+is $o.Str, "2022-01-01T00:00:00Z";
+
+lives-ok {
     $o = LocalTime.new: :year(2022);
 }
 is $o.year, 2022;
-is $o.Str, "2022-01-01T00:00:00.00";
+is $o.Str, "2022-01-01T00:00:00";
+
+lives-ok {
+    $o = LocalTime.new: :year(2022), :tz-abbrev('cst');
+}
+is $o.year, 2022;
+is $o.Str, "2022-01-01T00:00:00 CST";
+
+lives-ok {
+    $o = LocalTime.new: :year(2022), :tz-abbrev('cdt');
+}
+is $o.year, 2022;
+is $o.Str, "2022-01-01T00:00:00 CST";
+
 
 done-testing;

@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-B<LocalTime> - A clone of class B<DateTime> with a different default formatter
+B<LocalTime> - A clone of class B<DateTime> with different default formatters
 
 =head1 SYNOPSIS
 
@@ -17,6 +17,27 @@ use LocalTime;
 B<LocalTime> is a subclass of the Raku B<DateTime> class and was created
 to either add a local timezone abbreviation to a time string or show
 no timezone information at all if no abbreviation is available.
+
+This is the default format for C<DateTime>:
+=begin code
+$ say DateTime.new: :2022year;
+2022-01-01T00:00:00Z
+=end code
+
+This is the default format for C<LocalTime> with no time zone entry:
+=begin code
+$ say LocalTime.new: :2022year;
+2022-01-01T00:00:00 # <== note no trailing 'Z'
+=end code
+
+And this is the default format for C<LocalTime> with 'CST' entered:
+=begin code
+$ say LocalTime.new: :2022year, :tz-abbrev('CST');
+2022-01-01T00:00:00 CST 
+=end code
+
+Note that the user can enter either '*st' or '*dt' (case insensitive) and the correct
+form will be used for the time of year.
 
 Curtently only US abbreviations are available but a future modification
 will add others (perhaps in other languages also).

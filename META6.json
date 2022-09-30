@@ -6,7 +6,7 @@
   "build-depends": [
   ],
   "depends": [
-    "DateTime::US:ver<0.1.0>"
+    "Timezones::US"
   ],
   "description": "A clone of class DateTime with a different default formatter",
   "license": "Artistic-2.0",

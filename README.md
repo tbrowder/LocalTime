@@ -3,7 +3,7 @@
 NAME
 ====
 
-**LocalTime** - A clone of class **DateTime** with a different default formatter
+**LocalTime** - A clone of class **DateTime** with different default formatters
 
 SYNOPSIS
 ========
@@ -16,6 +16,23 @@ DESCRIPTION
 ===========
 
 **LocalTime** is a subclass of the Raku **DateTime** class and was created to either add a local timezone abbreviation to a time string or show no timezone information at all if no abbreviation is available.
+
+This is the default format for `DateTime`:
+
+    $ say DateTime.new: :2022year;
+    2022-01-01T00:00:00Z
+
+This is the default format for `LocalTime` with no time zone entry:
+
+    $ say LocalTime.new: :2022year;
+    2022-01-01T00:00:00 # <== note no trailing 'Z'
+
+And this is the default format for `LocalTime` with 'CST' entered:
+
+    $ say LocalTime.new: :2022year, :tz-abbrev('CST');
+    2022-01-01T00:00:00 CST
+
+Note that the user can enter either '*st' or '*dt' (case insensitive) and the correct form will be used for the time of year.
 
 Curtently only US abbreviations are available but a future modification will add others (perhaps in other languages also).
 

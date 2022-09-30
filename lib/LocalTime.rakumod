@@ -1,6 +1,6 @@
 unit class LocalTime is DateTime;
 
-use DateTime::US; # to adjust for DST if applicable and use US abbreviations
+use Timezones::US; # to adjust for DST if applicable and use US abbreviations
 
 # See DateTime::Julian for how to create
 # a subclass with a "new" method with
@@ -33,12 +33,13 @@ my $lt-format2 = sub ($self) {
 
 method new(:$tz-abbrev, |c) {
     if not $tz-abbrev.defined {
-        return self.DateTime::new(:formatter($lt-format2), |c); # a normal instantiation is expected, otherwise an exception is thrown
+        # a normal instantiation is expected, otherwise an exception is thrown
+        return self.DateTime::new(:formatter($lt-format2), |c); 
     }
 
     # get the correct offset in seconds from UTC for the TZ
 
-    self.DateTime::new(|c); 
+    self.DateTime::new(:formatter($lt-format1), |c); 
 }
 
 =begin comment

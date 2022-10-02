@@ -30,7 +30,7 @@ $ say DateTime.new: :2022year;
 =end item
 
 =begin item
-Thhe default format for C<LocalTime> with no time zone entry:
+The default format for C<LocalTime> with no time zone entry:
 
 =begin code
 $ say LocalTime.new: :2022year;

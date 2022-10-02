@@ -1,7 +1,6 @@
 unit class LocalTime is DateTime;
 
 # to adjust for DST if applicable and use US abbreviations
-use DateTime::US;
 use Timezones::US;
 
 use Formatters;
@@ -52,7 +51,7 @@ submethod TWEAK {
         # make sure it's recognized and ensure it's in Xst format
         $tza .= lc;
         $tza ~~ s/dt$/st/;
-        # using DateTime::US and Timezones::US
+        # using Timezones::US
         if %tzones{$tza}:exists {
             $!tz-name = %tzones{$tza}<name>; 
 

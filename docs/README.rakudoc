@@ -20,8 +20,10 @@ either none or other TZ information depending on the use (or non-use)
 of the named variable C<:tz-abbrev>. Following
 are the formatting effects of the various input conditions:
 
+=head3 class DateTime
+
 =begin item
-The default format for C<DateTime>:
+0. The default format for C<DateTime>:
 
 =begin code
 $ say DateTime.new: :2022year;
@@ -29,8 +31,10 @@ $ say DateTime.new: :2022year;
 =end code
 =end item
 
+=head3 class LocalTime
+
 =begin item
-The default format for C<LocalTime> with no time zone entry:
+1. The default format for C<LocalTime> with no time zone entry:
 
 =begin code
 $ say LocalTime.new: :2022year;
@@ -39,7 +43,7 @@ $ say LocalTime.new: :2022year;
 =end item
 
 =begin item
-The default format for C<LocalTime> with 'CST' entered:
+2. The default format for C<LocalTime> with 'CST' entered:
 
 =begin code
 $ say LocalTime.new: :2022year, :tz-abbrev('CST');
@@ -48,7 +52,7 @@ $ say LocalTime.new: :2022year, :tz-abbrev('CST');
 =end item
 
 =begin item
-The format for C<LocalTime> with a non-US TZ abbreviation entered:
+3. The format for C<LocalTime> with a non-US TZ abbreviation entered:
 
 =begin code
 $ say LocalTime.new: :2022year, :tz-abbrev('XYT');
@@ -57,7 +61,7 @@ $ say LocalTime.new: :2022year, :tz-abbrev('XYT');
 =end item
 
 =begin item
-The format for C<LocalTime> with an empty C<:tz-abbrev> named argument
+4. The format for C<LocalTime> with an empty C<:tz-abbrev> named argument
 entered:
 
 =begin code

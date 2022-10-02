@@ -38,6 +38,32 @@ method new(:$tz-abbrev, :$tz-name, :$non-us, |c) {
 }
 
 submethod TWEAK {
+
+=begin comment
+# the four modes of operation
+1. The default format for C<LocalTime> with no time zone entry:
+$ say LocalTime.new: :2022year;
+2022-01-01T00:00:00
+=end comment
+
+=begin comment
+2. The default format for C<LocalTime> with 'CST' entered:
+$ say LocalTime.new: :2022year, :tz-abbrev('CST');
+2022-01-01T00:00:00 CST 
+=end comment
+
+=begin comment
+3. The format for C<LocalTime> with a non-US TZ abbreviation entered:
+$ say LocalTime.new: :2022year, :tz-abbrev('XYT');
+2022-01-01T00:00:00 XYT
+=end comment
+
+=begin comment
+4. The format for C<LocalTime> with an empty C<:tz-abbrev> named argument
+$ say LocalTime.new: :2022year, :tz-abbrev;
+2022-01-01T00:00:00 Local Time (UTC -4 hrs)
+=end comment
+
     # named arg vars
     my $tza = $!tz-abbrev;
     my $nus = $!non-us;

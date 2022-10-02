@@ -2,6 +2,7 @@ use Test;
 use LocalTime;
 
 my $o;
+
 lives-ok {
     $o = DateTime.new: :year(2022);
 }
@@ -26,5 +27,10 @@ lives-ok {
 is $o.year, 2022;
 is $o.Str, "2022-01-01T00:00:00 CST";
 
+lives-ok {
+    $o = LocalTime.new: :year(2022), :7month, :tz-abbrev('cst');
+}
+is $o.year, 2022;
+is $o.Str, "2022-07-01T00:00:00 CDT";
 
 done-testing;

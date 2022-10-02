@@ -15,32 +15,62 @@ use LocalTime;
 =head1 DESCRIPTION
 
 B<LocalTime> is a subclass of the Raku B<DateTime> class and was created
-to either add a local timezone abbreviation to a time string or show
-no timezone information at all if no abbreviation is available.
+to either add a local timezone (TZ) abbreviation to a time string or show
+either none or other TZ information depending on the use (or non-use)
+if the named variable C<:tz-abbrev>. Following
+are the formatting effects of the various input conditions:
 
-This is the default format for C<DateTime>:
+=begin item
+The default format for C<DateTime>:
+
 =begin code
 $ say DateTime.new: :2022year;
 2022-01-01T00:00:00Z
 =end code
+=end item
 
-This is the default format for C<LocalTime> with no time zone entry:
+=begin item
+Thhe default format for C<LocalTime> with no time zone entry:
+
 =begin code
 $ say LocalTime.new: :2022year;
 2022-01-01T00:00:00 # <== note no trailing 'Z'
 =end code
+=end item
 
-And this is the default format for C<LocalTime> with 'CST' entered:
+=begin item
+The default format for C<LocalTime> with 'CST' entered:
+
 =begin code
 $ say LocalTime.new: :2022year, :tz-abbrev('CST');
 2022-01-01T00:00:00 CST 
 =end code
+=end item
 
-Note that the user can enter either '*st' or '*dt' (case insensitive) and the correct
+=begin item
+The format for C<LocalTime> with a non-US TZ abbreviation entered:
+
+=begin code
+$ say LocalTime.new: :2022year, :tz-abbrev('XYT');
+2022-01-01T00:00:00 XYT
+=end code
+=end item
+
+=begin item
+The format for C<LocalTime> with an empty C<:tz-abbrev> named argument
+entered:
+
+=begin code
+$ say LocalTime.new: :2022year, :tz-abbrev;
+2022-01-01T00:00:00 Local Time (UTC -4 hrs)
+=end code
+=end item
+
+Note for US TZ entries the user can enter either '*st' or '*dt' (case insensitive) and the correct
 form will be used for the time of year.
 
-Curtently only US abbreviations are available but a future modification
-will add others (perhaps in other languages also).
+Currently only US abbreviations are in the database, but a future modification
+will add others (perhaps in other languages also). PRs are welcome!
 
 =head1 AUTHOR
 
@@ -48,8 +78,8 @@ Tom Browder <tbrowder@acm.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2022 Tom Browder
+© 2022 Tom Browder
 
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+This library is free software; you may redistribute or modify it under the Artistic License 2.0.
 
 =end pod

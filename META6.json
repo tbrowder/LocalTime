@@ -13,9 +13,8 @@
   "name": "LocalTime",
   "perl": "6.d",
   "provides": {
-    "LocalTime": "lib/LocalTime.rakumod",
-    "tmp::LocalTime": "lib/tmp/LocalTime.rakumod",
-    "tmp::Stem": "lib/tmp/Stem.rakumod"
+    "Formatters": "lib/Formatters.rakumod",
+    "LocalTime": "lib/LocalTime.rakumod"
   },
   "resources": [
   ],

@@ -17,7 +17,7 @@ use LocalTime;
 B<LocalTime> is a subclass of the Raku B<DateTime> class and was created
 to either add a local timezone (TZ) abbreviation to a time string or show
 either none or other TZ information depending on the use (or non-use)
-if the named variable C<:tz-abbrev>. Following
+of the named variable C<:tz-abbrev>. Following
 are the formatting effects of the various input conditions:
 
 =begin item

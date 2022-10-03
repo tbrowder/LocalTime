@@ -19,29 +19,29 @@ DESCRIPTION
 
 ### class DateTime
 
-  * 0. The default format for `DateTime`:
+  * The default format for `DateTime`:
 
         $ say DateTime.new: :2022year;
         2022-01-01T00:00:00Z
 
 ### class LocalTime
 
-  * 1. The default format for `LocalTime` with no time zone entry:
+  * The default format for `LocalTime` with no time zone entry:
 
         $ say LocalTime.new: :2022year;
         2022-01-01T00:00:00 # <== note no trailing 'Z'
 
-  * 2. The default format for `LocalTime` with 'CST' entered:
+  * The default format for `LocalTime` with 'CST' entered:
 
         $ say LocalTime.new: :2022year, :tz-abbrev('CST');
         2022-01-01T00:00:00 CST
 
-  * 3. The format for `LocalTime` with a non-US TZ abbreviation entered:
+  * The format for `LocalTime` with a non-US TZ abbreviation entered:
 
         $ say LocalTime.new: :2022year, :tz-abbrev('XYT');
         2022-01-01T00:00:00 XYT
 
-  * 4. The format for `LocalTime` with an empty `:tz-abbrev` named argument entered:
+  * The format for `LocalTime` with an empty `:tz-abbrev` named argument entered:
 
         $ say LocalTime.new: :2022year, :tz-abbrev;
         2022-01-01T00:00:00 Local Time (UTC -4 hrs)

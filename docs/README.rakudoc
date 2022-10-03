@@ -23,7 +23,7 @@ are the formatting effects of the various input conditions:
 =head3 class DateTime
 
 =begin item
-0. The default format for C<DateTime>:
+The default format for C<DateTime>:
 
 =begin code
 $ say DateTime.new: :2022year;
@@ -34,7 +34,7 @@ $ say DateTime.new: :2022year;
 =head3 class LocalTime
 
 =begin item
-1. The default format for C<LocalTime> with no time zone entry:
+The default format for C<LocalTime> with no time zone entry:
 
 =begin code
 $ say LocalTime.new: :2022year;
@@ -43,7 +43,7 @@ $ say LocalTime.new: :2022year;
 =end item
 
 =begin item
-2. The default format for C<LocalTime> with 'CST' entered:
+The default format for C<LocalTime> with 'CST' entered:
 
 =begin code
 $ say LocalTime.new: :2022year, :tz-abbrev('CST');
@@ -52,7 +52,7 @@ $ say LocalTime.new: :2022year, :tz-abbrev('CST');
 =end item
 
 =begin item
-3. The format for C<LocalTime> with a non-US TZ abbreviation entered:
+The format for C<LocalTime> with a non-US TZ abbreviation entered:
 
 =begin code
 $ say LocalTime.new: :2022year, :tz-abbrev('XYT');
@@ -61,7 +61,7 @@ $ say LocalTime.new: :2022year, :tz-abbrev('XYT');
 =end item
 
 =begin item
-4. The format for C<LocalTime> with an empty C<:tz-abbrev> named argument
+The format for C<LocalTime> with an empty C<:tz-abbrev> named argument
 entered:
 
 =begin code

@@ -26,8 +26,8 @@ has Str $.tz-abbrev;
 has Str $.tz-name;
 has Str $.non-us;
 
-method new(:$tz-abbrev, :$tz-name, :$non-us, |c) {
-    if not ($tz-abbrev.defined or $tz-name.defined or $non-us.defined) {
+method new(:$tz-abbrev, |c) {
+    if not $tz-abbrev.defined {
         # a normal DateTime instantiation is expected, otherwise an exception is thrown
         # but note the formatter leaves off any suffix indicating TZ or local time
         self.DateTime::new(:formatter($no-tz-abbrev), |c); 

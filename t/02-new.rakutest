@@ -1,0 +1,36 @@
+use Test;
+use LocalTime;
+
+my $o;
+
+lives-ok {
+    $o = DateTime.new: :year(2022);
+}, "default DateTime";
+is $o.year, 2022, "year is 2022";
+is $o.Str, "2022-01-01T00:00:00Z", "is Z";
+
+lives-ok {
+    $o = LocalTime.new: :year(2022);
+}, "default LocalTime";
+is $o.year, 2022, "year is 2022";
+is $o.Str, "2022-01-01T00:00:00", "is ''";
+
+lives-ok {
+    $o = LocalTime.new: :year(2022), :tz-abbrev('cst');
+}, "cst";
+is $o.year, 2022, "year is 2022";
+is $o.Str, "2022-01-01T00:00:00 CST", "is CST";
+
+lives-ok {
+    $o = LocalTime.new: :year(2022), :tz-abbrev('cdt');
+}, "cdt";
+is $o.year, 2022, "year is 2022";
+is $o.Str, "2022-01-01T00:00:00 CST", "is CST";
+
+lives-ok {
+    $o = LocalTime.new: :year(2022), :7month, :tz-abbrev('cst');
+}, "cst => cdt";
+is $o.year, 2022, "year is 2022";
+is $o.Str, "2022-07-01T00:00:00 CDT", "is CDT";
+
+done-testing;

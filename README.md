@@ -15,29 +15,33 @@ use LocalTime;
 DESCRIPTION
 ===========
 
-**LocalTime** is a subclass of the Raku **DateTime** class and was created to either add a local timezone (TZ) abbreviation to a time string or show either none or other TZ information depending on the use (or non-use) if the named variable `:tz-abbrev`. Following are the formatting effects of the various input conditions:
+**LocalTime** is a subclass of the Raku **DateTime** class and was created to either add a local timezone (TZ) abbreviation to a time string or show either none or other TZ information depending on the use (or non-use) of the named variable `:tz-abbrev`. Following are the formatting effects of the various input conditions:
 
-  * The default format for `DateTime`:
+### class DateTime
+
+  * 0. The default format for `DateTime`:
 
         $ say DateTime.new: :2022year;
         2022-01-01T00:00:00Z
 
-  * Thhe default format for `LocalTime` with no time zone entry:
+### class LocalTime
+
+  * 1. The default format for `LocalTime` with no time zone entry:
 
         $ say LocalTime.new: :2022year;
         2022-01-01T00:00:00 # <== note no trailing 'Z'
 
-  * The default format for `LocalTime` with 'CST' entered:
+  * 2. The default format for `LocalTime` with 'CST' entered:
 
         $ say LocalTime.new: :2022year, :tz-abbrev('CST');
         2022-01-01T00:00:00 CST
 
-  * The format for `LocalTime` with a non-US TZ abbreviation entered:
+  * 3. The format for `LocalTime` with a non-US TZ abbreviation entered:
 
         $ say LocalTime.new: :2022year, :tz-abbrev('XYT');
         2022-01-01T00:00:00 XYT
 
-  * The format for `LocalTime` with an empty `:tz-abbrev` named argument entered:
+  * 4. The format for `LocalTime` with an empty `:tz-abbrev` named argument entered:
 
         $ say LocalTime.new: :2022year, :tz-abbrev;
         2022-01-01T00:00:00 Local Time (UTC -4 hrs)

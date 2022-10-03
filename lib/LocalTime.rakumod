@@ -39,41 +39,61 @@ method new(:$tz-abbrev, :$tz-name, :$non-us, |c) {
 
 submethod TWEAK {
 
-=begin comment
-# the four modes of operation
-1. The default format for C<LocalTime> with no time zone entry:
-$ say LocalTime.new: :2022year;
-2022-01-01T00:00:00
-=end comment
+    # the four modes of operation
+    =begin comment
+    1. The default format for C<LocalTime> with no time zone entry:
+    $ say LocalTime.new: :2022year;
+    2022-01-01T00:00:00
+    =end comment
 
-=begin comment
-2. The default format for C<LocalTime> with 'CST' entered:
-$ say LocalTime.new: :2022year, :tz-abbrev('CST');
-2022-01-01T00:00:00 CST 
-=end comment
+    =begin comment
+    2. The default format for C<LocalTime> with 'CST' entered:
+    $ say LocalTime.new: :2022year, :tz-abbrev('CST');
+    2022-01-01T00:00:00 CST 
+    =end comment
 
-=begin comment
-3. The format for C<LocalTime> with a non-US TZ abbreviation entered:
-$ say LocalTime.new: :2022year, :tz-abbrev('XYT');
-2022-01-01T00:00:00 XYT
-=end comment
+    =begin comment
+    3. The format for C<LocalTime> with a non-US TZ abbreviation entered:
+    $ say LocalTime.new: :2022year, :tz-abbrev('XYT');
+    2022-01-01T00:00:00 XYT
+    =end comment
 
-=begin comment
-4. The format for C<LocalTime> with an empty C<:tz-abbrev> named argument
-$ say LocalTime.new: :2022year, :tz-abbrev;
-2022-01-01T00:00:00 Local Time (UTC -4 hrs)
-=end comment
+    =begin comment
+    4. The format for C<LocalTime> with an empty C<:tz-abbrev> named argument
+    $ say LocalTime.new: :2022year, :tz-abbrev;
+    2022-01-01T00:00:00 Local Time (UTC -4 hrs)
+    =end comment
 
     # named arg vars
     my $tza = $!tz-abbrev;
-    my $nus = $!non-us;
-    my $tzn = $!tz-name; # not yet used for input, save for more TZ db availability
     my $timezone = 0; # default for DateTime's :timezone attribute
 
-    # working vars
-    my $tza-non-us = 0;
+    # working vars for modes 1-4
+    my $mode1 = 0; # not $tza.defined
+    my $mode2 = 0; # $tza = some valid US entry     test $mode2 ~~ Str
+    my $mode3 = 0; # $tza = some non-vald US entry  test $mode2 ~~ Str
+    my $mode4 = 0; # $tza.defined but no value      test $mode4 ~~ Bool, value True
 
-    if $tza.defined {
+    if not $tza.defined {
+        # mode 1
+        ++$mode1;
+    }
+    elsif $tza.defined {
+        # mode 2, 3, or 4
+        if $tza ~~ Bool {
+            # mode 4
+            ++$mode4;
+        }
+        elsif $tza ~~ Str {
+            # mode 2 or 3
+            if %tzones{}:exists {
+                # mode 2
+            }
+            else {
+                # mode 3
+            }
+        }
+
         # make sure it's recognized and ensure it's in Xst format
         $tza .= lc;
         $tza ~~ s/dt$/st/;

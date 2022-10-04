@@ -1,4 +1,4 @@
-#==== VERSION 2 =====
+#==== VERSION 1 =====
 
 unit class LocalTime is DateTime;
 
@@ -33,64 +33,6 @@ has Str $.tz-name  = '';
 has     $.timezone = 0;
 
 method new(:$tz-abbrev, |c) {
-
-    # default LocalTime named arg vars
-    my $tza    = $!tz-abbrev;
-
-    # working vars for modes 0-3
-    my $mode0 = 0; # not $tza.defined or $tza eq ''
-    my $mode1 = 0; # $tza = some valid US entry     test $mode2 ~~ Str
-    my $mode2 = 0; # $tza = some non-vald US entry  test $mode2 ~~ Str
-    my $mode3 = 0; # $tza.defined but no value      test $mode4 ~~ Bool, value True
-
-    # mode 0, 1, 2, or 3
-    if not $tza.defined {
-        ++$mode0;
-    }
-    elsif $tza ~~ Bool {
-        # mode 3
-        ++$mode3;
-    }
-    elsif $tza ~~ Str and $tza eq '' {
-        ++$mode0;
-    }
-    elsif $tza ~~ Str {
-        # mode 1 or 2
-        my $tmp = $tza.lc;
-        $tmp ~~ s/dt$/st/;
-        if %tzones{$tza.lc}:exists {
-            # mode 1
-            ++$mode1;
-            $tza = $tmp; # keep lc and xst format temporarily
-            $!timezone = %tzones{$tza}<utc-offset>;
-            $!timezone *= SEC-PER-HOUR;
-            $!tz-name = %tzones{$tza}<name>;
-            $!tz-abbrev .= uc;
-            if is-dst(:localtime(self.new)) {
-                # change per DST
-                $!timezone -= SEC-PER-HOUR;
-                $!tz-abbrev ~~ s/ST$/DT/;
-                $!tz-name   ~~ s/Standard/Daylight/;
-            }
-        }
-        else {
-            # mode 2
-            ++$mode2;
-        }
-    }
-
-    die "FATAL: Unable to determine a mode." if not ($mode0 or $mode1 or $mode2 or $mode3);
-
-    if $mode1 {
-        # US time zone
-        # details are already determined
-        die "FATAL: NYI" if $!tz-abbrev eq 'NYI';
-    }
-    else {
-        $!tz-abbrev = 'NYI';
-    }
-
-
     if (not $tz-abbrev.defined) or $tz-abbrev eq '' {
         #| A normal DateTime instantiation is expected, otherwise an exception is thrown
         #| but note the formatter leaves off any suffix indicating TZ or local time
@@ -102,7 +44,6 @@ method new(:$tz-abbrev, |c) {
     }
 }
 
-=begin comment
 submethod TWEAK {
 
     # the four modes of operation
@@ -207,4 +148,3 @@ submethod TWEAK {
     }
     =end comment
 }
-=end comment

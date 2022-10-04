@@ -3,7 +3,7 @@
 use lib <../lib>;
 use Formatters;
 
-class foo {
+class foo is DateTime {
     has DateTime $.dt;
     has $.tz-abbrev = "CST";
     # dup of DateTime
@@ -21,14 +21,16 @@ class foo {
     #submethod BUILD(:$!tz-abbrev, :$!year!, :$!month, :$!day, :$!hour, :$!minute, :$!second, :$!timezone) { }
 
     submethod TWEAK() {
-        #:$!tz-abbrev, :$!year!, :$!month, :$!day, :$!hour, :$!minute, :$!second, :$!timezone) 
         $!dt = DateTime.new(
-            :$!year, :$!month, :$!day, :$!hour, :$!minute, :$!second, :$!timezone) 
+            :$!year, :$!month, :$!day, :$!hour, :$!minute, :$!second, :$!timezone
+        ); 
+        self::new(|c);
     }
 }
 
-my $t = foo.new: :2022year;
+my $t = foo.new: :tz-abbrev('CST'), :2022year;
 say $t.year;
+say $t.tz-abbrev;
 
 =finish
 

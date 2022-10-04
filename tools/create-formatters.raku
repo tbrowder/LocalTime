@@ -14,8 +14,17 @@ if not @*ARGS {
     print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} create | show [options: force debug]
 
-    Creates a module of DateTime formatting objects
-      for use by users of module 'Timezones::Universal'.
+    Modes:
+      create - Creates a module of DateTime formatting objects
+               for use by users of module 'Timezones::Universal'.
+               The file is named '$mod'.
+
+      show   - Shows the formatter names (keys).
+
+    Options:
+      force  - Forces overwriting files
+      debug  - For developer use
+
     Currently the only TZ-specific formatters are for
       the US as found in module 'Timezones::US' but
       there are also formtters usable for TZs given 
@@ -34,37 +43,25 @@ for @*ARGS {
     }
 }
 
-
 if $show {
-    # example of dynamic instantiation
-    my class A {
-        method info {
-        "A.info"
-        }
+    #| US abbreviation first
+    for @tz.sort -> $tz {
+        my $st = $tz.uc;
+        my $dt = $st;
+        $dt ~~ s/ST$/DT/;
+        say "  $st";
+        say "  $dt";
+    }
+    for 12...1 {
+        say "  $_";
+    }
+    for 0...-12 {
+        say "  $_";
     }
 
-    my $f = sub ($s) {
-        sprintf "got:%s", .info given $s
-    }
-    say $f(A.new);
 } 
 
-if $demo {
-    # example of dynamic instantiation inside a program
-    my class A {
-        has $.num = 0;
-        has $!formatter;
-        method formatter() {
-            $!formatter();
-        }
-        submethod TWEAK(|) {
-            $!formatter = self.num < 10 ?? sub { "<10" }
-                                        !! sub { ">=10" }
-        }
-    }
-
-    A.new(:num(10)).formatter.say;
-    A.new(:num(5)).formatter.say;
+if $create {
 }
 
 

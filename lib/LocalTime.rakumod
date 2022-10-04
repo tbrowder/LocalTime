@@ -90,7 +90,6 @@ method new(:$tz-abbrev, |c) {
         $!tz-abbrev = 'NYI';
     }
 
-
     if (not $tz-abbrev.defined) or $tz-abbrev eq '' {
         #| A normal DateTime instantiation is expected, otherwise an exception is thrown
         #| but note the formatter leaves off any suffix indicating TZ or local time

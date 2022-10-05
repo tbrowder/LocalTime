@@ -4,11 +4,7 @@ unit class LocalTime is DateTime;
 
 # to adjust for DST if applicable and use US abbreviations
 use Timezones::US;
-
-use Formatters;
-# New formatters:
-my $with-tz-abbrev = $Formatters::with-tz-abbrev;
-my $no-tz-abbrev   = $Formatters::no-tz-abbrev;
+use F; # formatters for various time zones
 
 # See DateTime::Julian for how to create
 # a subclass with a "new" method with
@@ -42,6 +38,9 @@ method new(:$tz-abbrev, |c) {
     my $mode1 = 0; # $tza = some valid US entry     test $mode2 ~~ Str
     my $mode2 = 0; # $tza = some non-vald US entry  test $mode2 ~~ Str
     my $mode3 = 0; # $tza.defined but no value      test $mode4 ~~ Bool, value True
+
+    #| The default no-info formatter
+    my $formatter = $F::no-tz-info;
 
     # mode 0, 1, 2, or 3
     if not $tza.defined {
@@ -93,7 +92,7 @@ method new(:$tz-abbrev, |c) {
     if (not $tz-abbrev.defined) or $tz-abbrev eq '' {
         #| A normal DateTime instantiation is expected, otherwise an exception is thrown
         #| but note the formatter leaves off any suffix indicating TZ or local time
-        self.DateTime::new(:formatter($no-tz-abbrev), |c); 
+        self.DateTime::new(:$formatter, |c); 
     }
     else {
         #| The self.tz-abbrev value is used here:

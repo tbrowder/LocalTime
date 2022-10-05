@@ -10,20 +10,20 @@ my $exe    = 0;
 my $force  = 0;
 my $debug  = 0;
 
-my $mod-fil = 'TZ-formatters.rakumod';
-my $mod-nam = 'TZ-formatters';
+my $mod-fil = 'F.rakumod';
+my $mod-nam = 'F';
 if not @*ARGS {
     print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} create | show | exe [options: force debug]
 
     Modes:
       create - Creates a module of DateTime formatting objects
-               for use by users of module 'Timezones::Universal'.
-               The file is named '$mod-fil'.
+               for use by users of modules 'Timezones::Universal'
+               and 'Timezones::US'. The file is named '$mod-fil'.
 
       show   - Shows the formatter names (keys).
 
-      exe    - Try using the exported formatters.
+      exe    - Test using the exported formatters in '../Ftest'.
 
     Options:
       force  - Forces overwriting files
@@ -66,16 +66,15 @@ if $show {
     }
 } 
 
-
 sub write-formatter($fh, :$name!, :$tz-info = '') {
-    $fh.say:   "our \${$name} = sub(\$self) \{"; 
-    $fh.print: '    sprintf "%04d-%02d-%02dT%02d:%02d:%02d"'; 
+    $fh.say:   "our \${$name} = sub (\$self) \{"; 
+    $fh.print: '    sprintf "%04d-%02d-%02dT%02d:%02d:%02d'; # <= note no closing "
     if $tz-info {
-        $fh.say: " $tz-info";
+        $fh.print: " $tz-info";
     }
-    else {
-        $fh.say();
-    }
+    # close the format string
+    $fh.say: '"';
+    
     $fh.say:   '    .year, .month, .day, .hour, .minute, .second given $self'; 
     $fh.say:   '}';
 }
@@ -87,9 +86,19 @@ if $create {
         $fh = open $mod-fil, :w;
     }
     else {
-        $fh = open $mod-fil, :x;
+        try { 
+            $fh = open $mod-fil, :x; 
+        }
+        if $! {
+            note "FATAL: You must use option 'force' to overwrite an existing file.'";
+            exit;
+        }
     }
-    $fh.say: "unit module $mod-nam;";
+    $fh.say: qq:to/HERE/;
+    #| Formatters for DateTime classes
+    unit module $mod-nam;
+    HERE
+    write-formatter($fh, :name("no-tz-info"));
 
     #| US abbreviation first
     for @tz.sort -> $tz {
@@ -101,15 +110,29 @@ if $create {
     }
 
     #| Then hours of UTC offset
+    #|   2022-01-01T00:00:00 Local Time (UTC -4 hrs)
     for 12...1 -> $hr {
         my $name = "p$hr";
-        my $tz-info = "";
+        my $tz-info = "Local Time (UTC +$hr hrs)";
         write-formatter($fh, :$name, :$tz-info);
     }
-    for 0...-12 -> $hr is copy {
+    {
+        my $tz-info = "Local Time (UTC)";
+        my $hr = 0;
+        $tz-info = "Local Time (UTC)" if $hr == 0;
+        # create several possibilities
+        my $m0   = "m0";
+        my $p0   = "p0";
+        my $utc  = "UTC";
+        my $zulu = "Z";
+        for ($m0, $p0, $utc, $zulu) -> $name {
+            write-formatter($fh, :$name, :$tz-info);
+        }
+    }
+    for -1...-12 -> $hr is copy {
+        my $tz-info = "Local Time (UTC $hr hrs)";
         $hr *= -1;
         my $name = "m$hr";
-        my $tz-info = "";
         write-formatter($fh, :$name, :$tz-info);
     }
     
@@ -119,7 +142,7 @@ if $create {
 
 if $exe {
     use lib ".";
-    use F;
+    use Ftest;
 
     my $cst = $F::CST;
     my $dt;

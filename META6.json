@@ -13,7 +13,7 @@
   "name": "LocalTime",
   "perl": "6.d",
   "provides": {
-    "Formatters": "lib/Formatters.rakumod",
+    "F": "lib/F.rakumod",
     "LocalTime": "lib/LocalTime.rakumod"
   },
   "resources": [

@@ -67,13 +67,14 @@ if $show {
 } 
 
 sub write-formatter($fh, :$name!, :$tz-info = '') {
+    # note the 'our' is required, but no 'export'
     $fh.say:   "our \${$name} = sub (\$self) \{"; 
     $fh.print: '    sprintf "%04d-%02d-%02dT%02d:%02d:%02d'; # <= note no closing "
     if $tz-info {
         $fh.print: " $tz-info";
     }
-    # close the format string
-    $fh.say: '"';
+    # close the format string (don't forget the trailing comma!!)
+    $fh.say: '",';
     
     $fh.say:   '    .year, .month, .day, .hour, .minute, .second given $self'; 
     $fh.say:   '}';
@@ -144,7 +145,7 @@ if $exe {
     use lib ".";
     use Ftest;
 
-    my $cst = $F::CST;
+    my $cst = $::("F::CST");
     my $dt;
     $dt = DateTime.new: :2022year, :formatter($cst);
     say $dt.Str;

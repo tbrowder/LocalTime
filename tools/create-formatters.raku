@@ -23,7 +23,7 @@ if not @*ARGS {
 
       show   - Shows the formatter names (keys).
 
-      exe    - Test using the exported formatters in '../Ftest'.
+      exe    - Test using the exported formatters in './Ftest.rakumod'.
 
     Options:
       force  - Forces overwriting files
@@ -145,7 +145,8 @@ if $exe {
     use lib ".";
     use Ftest;
 
-    my $cst = $::("F::CST");
+    my $pkg = "Ftest::CST";
+    my $cst = $::($pkg);
     my $dt;
     $dt = DateTime.new: :2022year, :formatter($cst);
     say $dt.Str;

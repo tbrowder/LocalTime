@@ -1,21 +1,31 @@
-#==== VERSION 3 =====
+#==== VERSION 2 =====
 
-unit class LocalTime; # is DateTime;
+unit class LocalTime is DateTime;
 
 # to adjust for DST if applicable and use US abbreviations
 use Timezones::US;
 use F; # formatters for various time zones
 
-has Str $.tz-abbrev;
-has Str $.tz-name = '';
-has     $.dt;
+# See DateTime::Julian for how to create
+# a subclass with a "new" method with
+# a different signature.
+ 
+# Uses the following variable as defined by input.
+# If not entered, the default DateTime and its formatter
+# are used.
+#   $tz-abbrev, # converts to offset in seconds from UTC
 
-submethod TWEAK(:$tz-abbrev, |c) {
-    my $formatter;
+# As a subclass, it already has the
+# attributes and methods of its parent
+# class, but we can create our own
+# local versions inside "new" as necessary
+# and use them to instantiate the existing
+# DateTime.
 
+#has Str $.tz-abbrev;
+#has Str $.tz-name  = '';
 
-
-
+method new(:$tz-abbrev, |c) {
 
     my $dt = DateTime.new(|c);
 

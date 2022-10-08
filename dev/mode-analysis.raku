@@ -9,11 +9,11 @@ if not @*ARGS.elems {
     exit;
 }
 
-# working vars for modes 1-4
-my $mode1; #  = 0; # not $tza.defined
-my $mode2 = 'CST'; # $tza = some valid US entry
-my $mode3 = 'XST'; # $tza = some non-vald US entryy
-my $mode4;         # $tza.defined but no value
+# working vars for modes 0-3
+my $mode0; #  = 0; # not $tza.defined
+my $mode1 = 'CST'; # $tza = some valid US entry
+my $mode2 = 'XST'; # $tza = some non-vald US entryy
+my $mode3;         # $tza.defined but no value
 
 class foo {
     has $.tz

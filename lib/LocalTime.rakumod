@@ -12,12 +12,11 @@ has     $.dt;
 
 submethod TWEAK(:$tz-abbrev, |c) {
     # determine the formatter and $tz-name
-    my $formatter;
+    #|   The default no-info formatter
+    my $formatter = $::("F::no-tz-info");
 
-
-
-    # now get a DateTime object with the input formatter
-    $!dt = DateTime.new(:$formatter, |c); 
+    # now get a DateTime object for the time components
+    $!dt = DateTime.new(|c); 
 
     # default LocalTime named arg vars
     my $tza    = $!tz-abbrev;
@@ -27,12 +26,6 @@ submethod TWEAK(:$tz-abbrev, |c) {
     my $mode1 = 0; # $tza = some valid US entry     test $mode2 ~~ Str
     my $mode2 = 0; # $tza = some non-vald US entry  test $mode2 ~~ Str
     my $mode3 = 0; # $tza.defined but no value      test $mode4 ~~ Bool, value True
-
-    #| Working vars to pass to DateTime
-    #|   The default no-info formatter
-    my $formatter = $::("F::no-tz-info");
-    #|   The default timezone
-    my $timezone; # don't define it until needed
 
     # mode 0, 1, 2, or 3
     if not $tza.defined {
@@ -53,13 +46,10 @@ submethod TWEAK(:$tz-abbrev, |c) {
             # mode 1
             ++$mode1;
             $tza = $tmp; # keep lc and xst format temporarily
-            $timezone = %tzones{$tza}<utc-offset>;
-            $timezone *= SEC-PER-HOUR;
             $!tz-name = %tzones{$tza}<name>;
             $!tz-abbrev .= uc;
             if is-dst(:localtime($!dt.local)) {
                 # change per DST
-                $timezone -= SEC-PER-HOUR;
                 $!tz-abbrev ~~ s/ST$/DT/;
                 $!tz-name   ~~ s/Standard/Daylight/;
             }
@@ -81,18 +71,15 @@ submethod TWEAK(:$tz-abbrev, |c) {
     else {
         $!tz-abbrev = 'NYI';
     }
-
-    =begin comment
-    if (not $!tz-abbrev.defined) or $!tz-abbrev eq '' {
-        #| A normal DateTime instantiation is expected, otherwise an exception is thrown
-        #| but note the default formatter leaves off any suffix indicating TZ or local time
-        self.DateTime::new(:$formatter, |c); 
-    }
-    elsif $timezone.defined {
-        self.DateTime::new(:$timezone, :$formatter, |c); 
-    }
-    =end comment
-    else {
-        self.DateTime::new(:$formatter, |c); 
-    }
 }
+
+# dup the DateTime methods
+method year     { self.dt.year     }
+method month    { self.dt.month    }
+method day      { self.dt.day      }
+method hour     { self.dt.hour     }
+method minute   { self.dt.minute   }
+method second   { self.dt.second   }
+method timezone { self.dt.timezone }
+method Str      { self.dt.Str      }
+method local    { self.dt.local    }

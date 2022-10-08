@@ -1,5 +1,14 @@
 #!/usr/bin/env raku
 
+if not @*ARGS.elems {
+    print qq:to/HERE/;
+    Usage: {$*PROGRAM.basename} go
+
+    Demonstrates valid mode tests for class LocalTime.
+    HERE
+    exit;
+}
+
 # working vars for modes 1-4
 my $mode1; #  = 0; # not $tza.defined
 my $mode2 = 'CST'; # $tza = some valid US entry

@@ -11,16 +11,16 @@ has Str $.tz-name = '';
 has     $.dt;
 
 submethod TWEAK(:$tz-abbrev, |c) {
+    # determine the formatter and $tz-name
     my $formatter;
 
 
 
-
-
-    my $dt = DateTime.new(|c);
+    # now get a DateTime object with the input formatter
+    $!dt = DateTime.new(:$formatter, |c); 
 
     # default LocalTime named arg vars
-    my $tza    = $tz-abbrev;
+    my $tza    = $!tz-abbrev;
 
     # working vars for modes 0-3
     my $mode0 = 0; # not $tza.defined or $tza eq ''
@@ -57,7 +57,7 @@ submethod TWEAK(:$tz-abbrev, |c) {
             $timezone *= SEC-PER-HOUR;
             $!tz-name = %tzones{$tza}<name>;
             $!tz-abbrev .= uc;
-            if is-dst(:localtime($dt.local)) {
+            if is-dst(:localtime($!dt.local)) {
                 # change per DST
                 $timezone -= SEC-PER-HOUR;
                 $!tz-abbrev ~~ s/ST$/DT/;
@@ -82,12 +82,12 @@ submethod TWEAK(:$tz-abbrev, |c) {
         $!tz-abbrev = 'NYI';
     }
 
+    =begin comment
     if (not $!tz-abbrev.defined) or $!tz-abbrev eq '' {
         #| A normal DateTime instantiation is expected, otherwise an exception is thrown
         #| but note the default formatter leaves off any suffix indicating TZ or local time
         self.DateTime::new(:$formatter, |c); 
     }
-    =begin comment
     elsif $timezone.defined {
         self.DateTime::new(:$timezone, :$formatter, |c); 
     }

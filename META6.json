@@ -6,6 +6,7 @@
   "build-depends": [
   ],
   "depends": [
+    "File::Temp",
     "Timezones::US"
   ],
   "description": "A wrapper of class DateTime with varied formatters depending on time zone entry",

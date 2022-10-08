@@ -8,7 +8,7 @@
   "depends": [
     "Timezones::US"
   ],
-  "description": "A clone of class DateTime with a different default formatter",
+  "description": "A wrapper of class DateTime with varied formatters depending on time zone entry",
   "license": "Artistic-2.0",
   "name": "LocalTime",
   "perl": "6.d",

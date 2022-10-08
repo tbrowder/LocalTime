@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-B<LocalTime> - A clone of class B<DateTime> with different default formatters
+B<LocalTime> - A wrapper of class B<DateTime> with varied formatters depending on time zone entry
 
 =head1 SYNOPSIS
 
@@ -14,7 +14,7 @@ use LocalTime;
 
 =head1 DESCRIPTION
 
-B<LocalTime> is a subclass of the Raku B<DateTime> class and was created
+B<LocalTime> is a wrapper class holding an instance of the Raku B<DateTime> class. It was created
 to either add a local timezone (TZ) abbreviation to a time string or show
 either none or other TZ information depending on the use (or non-use)
 of the named variable C<:tz-abbrev>. Following

@@ -3,7 +3,7 @@
 NAME
 ====
 
-**LocalTime** - A clone of class **DateTime** with different default formatters
+**LocalTime** - A wrapper of class **DateTime** with varied formatters depending on time zone entry
 
 SYNOPSIS
 ========
@@ -15,7 +15,7 @@ use LocalTime;
 DESCRIPTION
 ===========
 
-**LocalTime** is a subclass of the Raku **DateTime** class and was created to either add a local timezone (TZ) abbreviation to a time string or show either none or other TZ information depending on the use (or non-use) of the named variable `:tz-abbrev`. Following are the formatting effects of the various input conditions:
+**LocalTime** is a wrapper class holding an instance of the Raku **DateTime** class. It was created to either add a local timezone (TZ) abbreviation to a time string or show either none or other TZ information depending on the use (or non-use) of the named variable `:tz-abbrev`. Following are the formatting effects of the various input conditions:
 
 ### class DateTime
 

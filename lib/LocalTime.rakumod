@@ -164,11 +164,14 @@ submethod TWEAK(:$tz-abbrev, |c) {
 
     # Finally, get a NEW DateTime object for the time components
     # AFTER the formatter and timezone values have been determined.
+    # Clone the original one:
     if $timezone.defined {
-        $!dt = DateTime.new(:$timezone, :$formatter, |c);
+        #$!dt = DateTime.new(:$timezone, :$formatter, |c);
+        $!dt .= clone(:$timezone, :$formatter);
     }
     else {
-        $!dt = DateTime.new(:$formatter, |c);
+        #$!dt = DateTime.new(:$formatter, |c);
+        $!dt .= clone(:$formatter);
     }
 
 } # end of submethod TWEAK

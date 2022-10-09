@@ -1,22 +1,28 @@
 #!/usr/bin/env raku
 
 use File::Temp;
-class foo {...}
-
+class fmt1 {...}
 
 if not @*ARGS {
     print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} go
 
     Demos dynamic creation of DateTime formatting objects
-      courtesy of @tonyo and the docs
+      in various ways courtesy of @tonyo, the docs, and
+      my experiments.
     HERE
     exit;
 }
 
-my &formatter = foo.new;
-my $dt = DateTime.new: :2022year, :&formatter;
-say "fmt: '{$dt.Str}'";
+my $dt;
+my &formatter = fmt1.new;
+$dt = DateTime.new: :2022year, :&formatter;
+say "fmt1: '{$dt.Str}'";
+
+# rename the container
+my $formatter = fmt1.new;
+$dt = DateTime.new: :2022year, :$formatter;
+say "fmt1: '{$dt.Str}'";
 
 =begin comment
 our $CST = sub ($self) {
@@ -39,7 +45,8 @@ sub write-formatter($fh, :$name!, :$tz-info = '') {
     $fh.say:   '}';
 }
 
-class foo does Callable {
+#| This class has the information baked in and was hand coded
+class fmt1 does Callable {
     has $.info;
     submethod CALL-ME($self, |c) {
     #our $CST = sub ($self) {

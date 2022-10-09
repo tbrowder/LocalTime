@@ -46,22 +46,26 @@ submethod TWEAK(:$tz-abbrev, |c) {
     =end comment
 
     my $tz-info; # used for formatter class construction
-    my $def-fmt-name = 'no-tz-info';
-    my $default-formatter = gen-fmt-class :class-names(%!class-names), :class-name($def-fmt-name);
-    my $formatter = $default-formatter;
+    #my $def-fmt-name = 'no-tz-info';
+    #my $default-formatter = gen-fmt-class :class-names(%!class-names), :class-name($def-fmt-name);
+    #my $formatter = $default-formatter;
     
     #|   The default timezone
-    my $timezone; # don't define it until needed
+    my $timezone; # don't define it unless needed (is it ever needed?)
 
     # working vars for modes 0-3
     my $mode0 = 0; # not $!tz-abbrev.defined or $!tz-abbrev eq ''
-                   #   $tz-info = ''
+                   #   set $tz-info = ''
     my $mode1 = 0; # $!tz-abbrev = some valid US entry     test $mode2 ~~ Str
-                   #   $tz-info = 'CST'
+                   #   set $tz-info = 'CST'
     my $mode2 = 0; # $!tz-abbrev = some non-valid US entry  test $mode2 ~~ Str
-                   #   $tz-info = 'as entered.uc'
+                   #   set $tz-info = 'as entered.uc'
     my $mode3 = 0; # $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, value True
-                   #   $tz-info = 'Local Time (UTC +/-$n hrs)'
+                   #   set $tz-info = 'Local Time (UTC +/-$n hrs)'
+
+    #=============================================================
+    # SAVE THIS IN ANOTHER FILE FOR NOW
+    =begin comment
     my %m;
     %m<0> = 1; # the default
 
@@ -161,6 +165,8 @@ submethod TWEAK(:$tz-abbrev, |c) {
         }
         $formatter = $::("F::$fkey");
     }
+    =end comment
+    #=============================================================
 
     # Finally, get a NEW DateTime object for the time components
     # AFTER the formatter and timezone values have been determined.
@@ -223,8 +229,8 @@ sub gen-fmt-class(:%class-names!,
                   :$class-name!,  # must not have ANY spaces, must be unique
                   :$tz-abbrev,    # determines mode (0-3)
                   :$tz-info = ''  # needed for actual formatter class construction
-                 ) is export {
-    #| A class generator factory for DateTime formatters.
+                 ) is export(:gen-fmt-class) {
+    #| An exportable class generator factory for DateTime formatters.
     #| The caller must ensure the class name is unique.
     #| Passing in a hash of generated names provides that
     #| that capability.
@@ -265,3 +271,4 @@ sub gen-fmt-class(:%class-names!,
 
     EVAL $fmt
 } # sub gen-fmt-class
+

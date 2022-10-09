@@ -5,14 +5,22 @@ unit class LocalTime; # is DateTime;
 
 # to adjust for DST if applicable and use US abbreviations
 use Timezones::US;
+=begin comment
+# trying to use only dynamically generated formatters
 use F; # formatters for various time zones
+=end comment
 
 has          $.tz-abbrev;
 has          $.tz-name = '';
 has DateTime $.dt;
 has          $.mode = 0;
+has          %.class-names;  #| Keep track of generated formatters
 
 submethod TWEAK(:$tz-abbrev, |c) {
+    # trying a better way to determine mode
+    my $Mode = self!get-mode(:$!tz-abbrev, :%tzones); 
+
+    =begin comment
     # Create a temporary directory as a place for a temporary module
     # for dynamic formatters
     use File::Temp;
@@ -23,25 +31,37 @@ submethod TWEAK(:$tz-abbrev, |c) {
     $fh.say: "unit module Ftemp;";
     $fh.close;
     use Ftemp;
+    =end comment
 
 
-    # We need the time entered by the user. We'll modify
-    # it after we determine the proper formatter and
-    # timezone to use. We should be able to do that
-    # with the '.clone' method.
-    $!dt = DateTime.new(|c); 
+    # We need the time entered by the user. We'll modify it after we
+    # determine the proper formatter and timezone to use. We should be
+    # able to do that with the '.clone' method.
+    $!dt = DateTime.new(|c);
 
     #| Working vars to pass to DateTime
     #|   The default no-info formatter
+    =begin comment
     my $formatter = $::("F::no-tz-info");
+    =end comment
+
+    my $tz-info; # used for formatter class construction
+    my $def-fmt-name = 'no-tz-info';
+    my $default-formatter = gen-fmt-class :class-names(%!class-names), :class-name($def-fmt-name);
+    my $formatter = $default-formatter;
+    
     #|   The default timezone
     my $timezone; # don't define it until needed
 
     # working vars for modes 0-3
     my $mode0 = 0; # not $!tz-abbrev.defined or $!tz-abbrev eq ''
+                   #   $tz-info = ''
     my $mode1 = 0; # $!tz-abbrev = some valid US entry     test $mode2 ~~ Str
+                   #   $tz-info = 'CST'
     my $mode2 = 0; # $!tz-abbrev = some non-valid US entry  test $mode2 ~~ Str
+                   #   $tz-info = 'as entered.uc'
     my $mode3 = 0; # $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, value True
+                   #   $tz-info = 'Local Time (UTC +/-$n hrs)'
     my %m;
     %m<0> = 1; # the default
 
@@ -90,7 +110,10 @@ submethod TWEAK(:$tz-abbrev, |c) {
                 $!tz-abbrev ~~ s/DT$/ST/;
                 $!tz-name   ~~ s/Daylight/Standard/;
             }
+            =begin comment
             $formatter = $::("F::$!tz-abbrev");
+            =end comment
+            $formatter = gen-fmt-class :classnames(%!class-names), :class-name($!tz-abbrev);
         }
         else {
             # mode 2
@@ -99,22 +122,27 @@ submethod TWEAK(:$tz-abbrev, |c) {
             %m<2> = True;
             # leave the $!tz-abbrev entry as is for now
             # $!tz-abbrev .= uc;
-            
+
             # define the formatter
+            =begin comment
             my $fkey = '$' ~ $!tz-abbrev;
             # create a module for one-time use
-            self.write-temp-formatter($fh, :name($fkey), :tz-info($!tz-abbrev)); 
+            self.write-temp-formatter($fh, :name($fkey), :tz-info($!tz-abbrev));
             $fh.close;
             $formatter = $::("Ftemp::$!tz-abbrev");
+            =end comment
+            $formatter = gen-fmt-class :class-names(%!class-names), :class-name($!tz-abbrev);
         }
     }
 
     die "FATAL: Unable to determine a mode." if not ($mode0 or $mode1 or $mode2 or $mode3);
     if %m.elems > 1 {
          my $s = %m.keys.sort.join(', ');
-         note "FATAL: Multiple modes found: $s"; 
+         note "FATAL: Multiple modes found: $s";
          die  "Bailing out!";
     }
+
+    die "FATAL: mode ($!mode) and Mode ($Mode) differ" if $!mode !== $Mode;
 
     if $mode0 or $mode1 or $mode2 {
         # details are already determined
@@ -137,10 +165,10 @@ submethod TWEAK(:$tz-abbrev, |c) {
     # Finally, get a NEW DateTime object for the time components
     # AFTER the formatter and timezone values have been determined.
     if $timezone.defined {
-        $!dt = DateTime.new(:$timezone, :$formatter, |c); 
+        $!dt = DateTime.new(:$timezone, :$formatter, |c);
     }
     else {
-        $!dt = DateTime.new(:$formatter, |c); 
+        $!dt = DateTime.new(:$formatter, |c);
     }
 
 } # end of submethod TWEAK
@@ -156,17 +184,81 @@ method timezone { self.dt.timezone }
 method Str      { self.dt.Str      }
 method local    { self.dt.local    }
 
-method write-temp-formatter($fh, :$name!, :$tz-info = '') {
-    # note the 'our' is required, but no 'export'
-    $fh.say:   "our \${$name} = sub (\$self) \{"; 
-    $fh.print: '    sprintf "%04d-%02d-%02dT%02d:%02d:%02d'; # <= note no closing "
-    if $tz-info {
-        $fh.print: " $tz-info";
+method !get-mode(:$!tz-abbrev!, :%tzones!) {
+    my $mode;
+    if not $!tz-abbrev.defined {
+        $mode = 0;
     }
-    # close the format string (don't forget the trailing comma!!)
-    $fh.say: '",';
-    
-    $fh.say:   '    .year, .month, .day, .hour, .minute, .second given $self'; 
-    $fh.say:   '}';
-    $fh.close:
+    elsif $!tz-abbrev eq '' {
+        $mode = 0;
+    }
+    elsif $!tz-abbrev ~~ Str {
+        if %tzones{$!tz-abbrev}:exists {
+            $mode = 1;
+        }
+        else {
+            $mode = 2;
+        }
+    }
+    elsif $!tz-abbrev ~~ Bool {
+        $mode = 3;
+    }
+    else {
+        die "FATAL: All possibilities exhausted.";
+    }
+    $mode
 }
+    =begin comment
+    # working vars for modes 0-3
+    my $mode0 = 0; # not $!tz-abbrev.defined or $!tz-abbrev eq ''
+    my $mode1 = 0; # $!tz-abbrev = some valid US entry     test $mode2 ~~ Str
+    my $mode2 = 0; # $!tz-abbrev = some non-valid US entry  test $mode2 ~~ Str
+    my $mode3 = 0; # $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, value True
+    =end comment
+
+sub gen-fmt-class(:%class-names!, 
+                  :$class-name!,  # must not have ANY spaces, must be unique
+                  :$tz-abbrev,    # determines mode (0-3)
+                  :$tz-info = ''  # needed for actual formatter class construction
+                 ) is export {
+    #| A class generator factory for DateTime formatters.
+    #| The caller must ensure the class name is unique.
+    #| Passing in a hash of generated names provides that
+    #| that capability.
+
+    use MONKEY-SEE-NO-EVAL;
+
+    if %class-names{$class-name}:exists {
+        # return it
+        return %class-names{$class-name};
+        die "FATAL: class $class-name already exists";
+    }
+    %class-names{$class-name} = True;
+ 
+    my $fmt = qq:to/HERE/;
+    class $class-name does Callable \{
+    HERE
+    $fmt .= chomp;
+
+    $fmt ~= q:to/HERE/;
+        submethod CALL-ME($self, |c) {
+            sprintf "%04d-%02d-%02dT%02d:%02d:%02d
+    HERE
+    $fmt .= chomp;
+
+    if $tz-info {
+        $fmt ~= " $tz-info";
+    }
+    $fmt .= chomp;
+
+    # close the format string (don't forget the trailing comma!!)
+    $fmt ~= q:to/HERE/;
+    ",
+            .year, .month, .day, .hour, .minute, .second given $self
+         }
+    }
+    HERE
+    $fmt .= chomp;
+
+    EVAL $fmt
+} # sub gen-fmt-class

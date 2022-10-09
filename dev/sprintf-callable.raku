@@ -74,7 +74,7 @@ sub gen-fmt2 {
     EVAL $fmt
 }
 
-sub gen-class(:%class-names!, :$class-name!, :$tz-info = '') {
+sub gen-class(:%class-names!, :$class-name!, :$tz-info = '') is export {
     #| A class generator factory for DateTime formatters.
     #| The caller must ensure the class name is unique.
     #| Passing in a hash of generated names provides that

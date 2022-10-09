@@ -14,7 +14,7 @@ if not @*ARGS {
     exit;
 }
 
-# inline hand coding
+#=== inline hand coding ================
 my $dt;
 my &formatter = fmt1.new;
 $dt = DateTime.new: :2022year, :&formatter;
@@ -24,6 +24,14 @@ say "fmt1: '{$dt.Str}'";
 my $formatter = fmt1.new;
 $dt = DateTime.new: :2022year, :$formatter;
 say "fmt1: '{$dt.Str}'";
+#=== end inline hand coding ================
+
+#=== create the formatter as a string ================
+my $f = gen-fmt2;
+$formatter = $f.new;
+$dt = DateTime.new: :2022year, :$formatter;
+say "fmt2: '{$dt.Str}'";
+
 
 =begin comment
 our $CST = sub ($self) {
@@ -53,3 +61,19 @@ class fmt1 does Callable {
         .year, .month, .day, .hour, .minute, .second given $self
     }
 }
+
+sub gen-fmt2 {
+    use MONKEY-SEE-NO-EVAL;
+
+    my $fmt2 = q:to/HERE/;
+    class fmt2 does Callable {
+        submethod CALL-ME($self, |c) {
+            sprintf "%04d-%02d-%02dT%02d:%02d:%02d EVAL",
+            .year, .month, .day, .hour, .minute, .second given $self
+        }
+    }
+    HERE
+
+    EVAL $fmt2
+}
+

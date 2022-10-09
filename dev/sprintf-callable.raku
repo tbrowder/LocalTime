@@ -47,7 +47,7 @@ $dt = DateTime.new: :2022year, :$formatter;
 say "fmt4: '{$dt.Str}'";
 #=== EUREKA!! 
 
-# try the clone methoc
+# try the clone method
 $dt = $dt.clone(:year(2024));
 say "fmt4 clone: '{$dt.Str}'";
 
@@ -74,8 +74,8 @@ sub gen-fmt2 {
     EVAL $fmt
 }
 
-sub gen-class(:%class-names!, :$class-name!, :$tz-info = '') is export {
-    #| A class generator factory for DateTime formatters.
+sub gen-fmt-class(:%class-names!, :$class-name!, :$tz-info = '') is export {
+    #| An exportable class generator factory for DateTime formatters.
     #| The caller must ensure the class name is unique.
     #| Passing in a hash of generated names provides that
     #| that capability.

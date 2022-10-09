@@ -13,6 +13,18 @@ has DateTime $.dt;
 has          $.mode = 0;
 
 submethod TWEAK(:$tz-abbrev, |c) {
+    # Create a temporary directory as a place for a temporary module
+    # for dynamic formatters
+    use File::Temp;
+    my $tdir = tempdir;
+    %*ENV<RAKUDOLIB> = $tdir;
+    my $tmodfil = "$tdir/Ftemp.rakumod";
+    my $fh = open $tmodfil, :w;
+    $fh.say: "unit module Ftemp;";
+    $fh.close;
+    use Ftemp;
+
+
     # We need the time entered by the user. We'll modify
     # it after we determine the proper formatter and
     # timezone to use. We should be able to do that
@@ -55,7 +67,7 @@ submethod TWEAK(:$tz-abbrev, |c) {
         # for time zone lookup
         my $tmp = $!tz-abbrev.lc;
         $tmp ~~ s/dt$/st/;
-        if %tzones{$!tz-abbrev.lc}:exists {
+        if %tzones{$tmp}:exists {
             # mode 1
             ++$mode1;
             $!mode = 1;
@@ -87,6 +99,13 @@ submethod TWEAK(:$tz-abbrev, |c) {
             %m<2> = True;
             # leave the $!tz-abbrev entry as is for now
             # $!tz-abbrev .= uc;
+            
+            # define the formatter
+            my $fkey = '$' ~ $!tz-abbrev;
+            # create a module for one-time use
+            self.write-temp-formatter($fh, :name($fkey), :tz-info($!tz-abbrev)); 
+            $fh.close;
+            $formatter = $::("Ftemp::$!tz-abbrev");
         }
     }
 
@@ -136,3 +155,18 @@ method second   { self.dt.second   }
 method timezone { self.dt.timezone }
 method Str      { self.dt.Str      }
 method local    { self.dt.local    }
+
+method write-temp-formatter($fh, :$name!, :$tz-info = '') {
+    # note the 'our' is required, but no 'export'
+    $fh.say:   "our \${$name} = sub (\$self) \{"; 
+    $fh.print: '    sprintf "%04d-%02d-%02dT%02d:%02d:%02d'; # <= note no closing "
+    if $tz-info {
+        $fh.print: " $tz-info";
+    }
+    # close the format string (don't forget the trailing comma!!)
+    $fh.say: '",';
+    
+    $fh.say:   '    .year, .month, .day, .hour, .minute, .second given $self'; 
+    $fh.say:   '}';
+    $fh.close:
+}

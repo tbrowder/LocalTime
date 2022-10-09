@@ -47,6 +47,11 @@ $dt = DateTime.new: :2022year, :$formatter;
 say "fmt4: '{$dt.Str}'";
 #=== EUREKA!! 
 
+# try the clone
+#$dt = $dt.clone.year(2024);
+#say "fmt4 clone: '{$dt.Str}'";
+
+
 #| This class has the information baked in and was hand coded
 class fmt1 does Callable {
     submethod CALL-ME($self, |c) {

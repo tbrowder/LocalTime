@@ -14,6 +14,7 @@ if not @*ARGS {
     exit;
 }
 
+# inline hand coding
 my $dt;
 my &formatter = fmt1.new;
 $dt = DateTime.new: :2022year, :&formatter;
@@ -47,10 +48,8 @@ sub write-formatter($fh, :$name!, :$tz-info = '') {
 
 #| This class has the information baked in and was hand coded
 class fmt1 does Callable {
-    has $.info;
     submethod CALL-ME($self, |c) {
-    #our $CST = sub ($self) {
-    sprintf "%04d-%02d-%02dT%02d:%02d:%02d GMT",
-    .year, .month, .day, .hour, .minute, .second given $self
+        sprintf "%04d-%02d-%02dT%02d:%02d:%02d HAND-CODED INLINE",
+        .year, .month, .day, .hour, .minute, .second given $self
     }
 }

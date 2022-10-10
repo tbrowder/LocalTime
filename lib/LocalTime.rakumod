@@ -1,16 +1,18 @@
 #==== VERSION 3 =====
 
 #| A wrapper around a DateTime object
-unit class LocalTime; # is DateTime;
+unit class LocalTime; 
 
 # to adjust for DST if applicable and use US abbreviations
 use Timezones::US;
+
 =begin comment
 # trying to use only dynamically generated formatters
 use F; # formatters for various time zones
 =end comment
 
-has          $.tz-abbrev;
+has          $.tz-abbrev; # lower case, index into %tzones
+has          $.TZ-ABBREV; # upper case
 has          $.tz-name = '';
 has DateTime $.dt;
 has          $.mode = 0;
@@ -67,13 +69,22 @@ submethod TWEAK(:$tz-abbrev, |c) {
     #=============================================================
     # see code extracted from here in file 'SAVED-CODE'
     #=============================================================
+
     if $!mode == 0 {
+        # $mode 0   not $!tz-abbrev.defined or $!tz-abbrev eq ''
+        #             set $tz-info = ''
     }
     elsif $!mode == 1 {
+        # $mode 1   $!tz-abbrev = some valid US entry     test $mode2 ~~ Str
+        #             set $tz-info = 'CST'
     }
     elsif $!mode == 2 {
+        # $mode 2   $!tz-abbrev = some non-valid US entry  test $mode2 ~~ Str
+        #             set $tz-info = 'as entered.uc'
     }
     elsif $!mode == 3 {
+        # $mode 3   $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, value True
+        #             set $tz-info = 'Local Time (UTC +/-$n hrs)'
     }
     else {
         die "FATAL: Unable to determine a mode."
@@ -105,14 +116,22 @@ method Str      { self.dt.Str      }
 method local    { self.dt.local    }
 
 method !get-mode(:$!tz-abbrev!, :%tzones!) {
+    die "TOM, FIX THIS";
+    my $tz-abbrev = $!tz-abbrev;
+
     my $mode;
-    if not $!tz-abbrev.defined {
+    if not $tz-abbrev.defined {
         $mode = 0;
     }
-    elsif $!tz-abbrev eq '' {
+    elsif $tz-abbrev eq '' {
         $mode = 0;
     }
     elsif $!tz-abbrev ~~ Str {
+        # get in shape to be a %tzones hash key (lower case, CST)
+        $tz-abbrev .= lc;
+        $tz-abbrev ~~ s/dt$/st/;
+        $!tz-abbrev = $
+
         if %tzones{$!tz-abbrev}:exists {
             $mode = 1;
         }

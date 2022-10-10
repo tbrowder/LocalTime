@@ -36,12 +36,20 @@ my %class-names; # generated classes must have unique names
 my $fmt3 = "fmt3";
 my $fmt4 = "fmt4";
 
-my $f3 = gen-class :%class-names, :class-name($fmt3);
+my $f3 = gen-fmt-class :%class-names, :class-name($fmt3);
+# debug
+if 0 {
+    for $f3.lines -> $line {
+        note $line;
+    }
+    exit
+}
 $formatter = $f3.new;
 $dt = DateTime.new: :2022year, :$formatter;
 say "fmt3: '{$dt.Str}'";
   
-my $f4 = gen-class :%class-names, :class-name($fmt4), :tz-info("HOORAY!");
+my $f4 = gen-fmt-class :%class-names, :class-name($fmt4), :tz-info("HOORAY!");
+
 $formatter = $f4.new;
 $dt = DateTime.new: :2022year, :$formatter;
 say "fmt4: '{$dt.Str}'";
@@ -90,7 +98,7 @@ sub gen-fmt-class(:%class-names!, :$class-name!, :$tz-info = '') is export {
     my $fmt = qq:to/HERE/;
     class $class-name does Callable \{
     HERE
-    $fmt .= chomp;
+    #$fmt .= chomp;
 
     $fmt ~= q:to/HERE/;
         submethod CALL-ME($self, |c) {

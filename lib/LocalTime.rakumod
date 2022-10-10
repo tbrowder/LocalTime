@@ -11,15 +11,21 @@ use Timezones::US;
 use F; # formatters for various time zones
 =end comment
 
-has          $.tz-abbrev; # lower case, index into %tzones
-has          $.TZ-ABBREV; # upper case
+has          $.tz-abbrev;     # lower case, index into %tzones
+has          $.TZ-ABBREV;     # upper case
+has          $.TZ-ABBREV-DST; # upper case
 has          $.tz-name = '';
+has          $.tz-abbrev-orig;
+
 has DateTime $.dt;
 has          $.mode = 0;
 has          %.class-names;  #| Keep track of generated formatters
 
 submethod TWEAK(:$tz-abbrev, |c) {
     # trying a better way to determine mode
+    # sets all $tz-* if a US entry
+    # sets some $tz-* otherwise
+
     my $Mode = self!get-mode(:$!tz-abbrev, :%tzones);
 
     =begin comment
@@ -116,9 +122,9 @@ method Str      { self.dt.Str      }
 method local    { self.dt.local    }
 
 method !get-mode(:$!tz-abbrev!, :%tzones!) {
-    die "TOM, FIX THIS";
-    my $tz-abbrev = $!tz-abbrev;
+    $!tz-abbrev-orig = $!tz-abbrev;
 
+    my $tz-abbrev = $!tz-abbrev;
     my $mode;
     if not $tz-abbrev.defined {
         $mode = 0;
@@ -129,11 +135,14 @@ method !get-mode(:$!tz-abbrev!, :%tzones!) {
     elsif $!tz-abbrev ~~ Str {
         # get in shape to be a %tzones hash key (lower case, CST)
         $tz-abbrev .= lc;
-        $tz-abbrev ~~ s/dt$/st/;
-        $!tz-abbrev = $
+        $tz-abbrev ~~ s/dt$/st/; # TODO: affect on non-US?
+        $!tz-abbrev = $tz-abbrev;
+        $!TZ-ABBREV = $tz-abbrev.uc;
 
         if %tzones{$!tz-abbrev}:exists {
             $mode = 1;
+            $!TZ-ABBREV-DST = $!TZ-ABBREV;
+            $!TZ-ABBREV-DST ~~ s/ST$/DT/;
         }
         else {
             $mode = 2;
@@ -158,8 +167,10 @@ method !get-mode(:$!tz-abbrev!, :%tzones!) {
 sub gen-fmt-class(:%class-names!,
                   :$class-name!,  # must not have ANY spaces, must be unique
                   :$tz-abbrev,    # determines mode (0-3)
-                  :$tz-info = ''  # needed for actual formatter class construction
+                  :$tz-info = '', # needed for actual formatter class construction
+                  :$debug,
                  ) is export(:gen-fmt-class) {
+
     #| An exportable class generator factory for DateTime formatters.
     #| The caller must ensure the class name is unique.
     #| Passing in a hash of generated names provides that
@@ -168,16 +179,14 @@ sub gen-fmt-class(:%class-names!,
     use MONKEY-SEE-NO-EVAL;
 
     if %class-names{$class-name}:exists {
+        die "FATAL: class $class-name already exists";
         # return it
         return %class-names{$class-name};
-        die "FATAL: class $class-name already exists";
     }
-    %class-names{$class-name} = True;
 
     my $fmt = qq:to/HERE/;
     class $class-name does Callable \{
     HERE
-    $fmt .= chomp;
 
     $fmt ~= q:to/HERE/;
         submethod CALL-ME($self, |c) {
@@ -194,7 +203,7 @@ sub gen-fmt-class(:%class-names!,
     $fmt ~= q:to/HERE/;
     ",
             .year, .month, .day, .hour, .minute, .second given $self
-         }
+        }
     }
     HERE
     $fmt .= chomp;

@@ -1,59 +1,22 @@
 #!/usr/bin/env raku
 
 # from tonyo, IRC #raku, 1230, 2022-10-11
-# modified to suit me
 
 class A {
-    has $.fstr; # some formatter as a string
+    has $.some-property;
 }
 
 sub gen-fmt(A:D $obj) {
     $obj does role :: does Callable {
         submethod CALL-ME(|) {
-            self.fstr;
+            self.some-property;
         }
     };
 }
 
-my %fstrings;
-for <CST PST> -> $cname {
-    my $s = "";
-
-    $s ~= q:to/HERE/;
-    sub ($self) { 
-        sprintf "%04d-%02d-%02dT%02d:%02d:02d
-    HERE
-    $s .= chomp;
-    $s ~= " $cname";
-    $s .= chomp;
-    # Close the format string (don't forget the trailing comma!!)
-    $s ~= q:to/HERE/;
-    ",
-            .year, .month, .day, .hour, .minute, .second given $self
-	}
-    }
-    HERE
-    $s .= chomp;
-    %fstrings{$cname} = $s;
-}
-
-for %fstrings.keys.sort -> $tz {
-    say "=== key: '$tz', fstring:";
-    say %fstrings{$tz};
-}
-
-for %fstrings -> $fstr {
-    #use MONKEY-SEE-NO-EVAL;
-    my $formatter = $fstr.new;
-    my $dt = DateTime.new: :2020year, :$formatter;
-    say $dt.Str;
-}
-
-=finish
-
-my $a = A.new(:info<$a>);
-my $b = A.new(:info<$b>);
-my $c = A.new(:info<blah>);
+my $a = A.new(:some-property<$a>);
+my $b = A.new(:some-property<$b>);
+my $c = A.new(:some-property<blah>);
 
 say gen-fmt($a)();
 say gen-fmt($b)();

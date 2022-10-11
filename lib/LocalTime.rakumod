@@ -5,16 +5,16 @@ unit class LocalTime;
 
 # to adjust for DST if applicable and use US abbreviations
 use Timezones::US;
+use UUID::V4;
 
-has          $.tz-abbrev;     # lower case, index into %tzones
-has          $.TZ-ABBREV;     # upper case
-has          $.TZ-ABBREV-DST; # upper case
+has          $.tz-abbrev;      # lower case, index into %tzones
+has          $.TZ-ABBREV;      # upper case
+has          $.TZ-ABBREV-DST;  # upper case in form ~~ s/ST$/DT/ 
+has          $.tz-abbrev-orig; # the original entry
 has          $.tz-name = '';
-has          $.tz-abbrev-orig;
 
 has DateTime $.dt;
 has          $.mode = 0;
-has          %.fclass;  #| Keep track of generated formatters
 
 submethod TWEAK(:$tz-abbrev, |c) {
     # trying a better way to determine mode
@@ -58,6 +58,7 @@ submethod TWEAK(:$tz-abbrev, |c) {
     if $!mode == 0 {
         # $mode 0   not $!tz-abbrev.defined or $!tz-abbrev eq ''
         #             set $tz-info = ''
+        $formatter = self.gen-fmt-class;
     }
     elsif $!mode == 1 {
         # $mode 1   $!tz-abbrev = some valid US entry     test $mode2 ~~ Str
@@ -151,7 +152,7 @@ my $mode3 = 0; # $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, valu
 =end comment
 
 method gen-fmt-class(
-                  :$class!,      # must not have ANY spaces, must be unique
+#                  :$class!,      # must not have ANY spaces, must be unique
                   :$tz-abbrev,    # determines mode (0-3)
                   :$tz-info = '', # needed for actual formatter class construction
                   :$debug,
@@ -162,13 +163,12 @@ method gen-fmt-class(
     #| Passing in a hash of generated names provides that
     #| that capability.
     #|
-#    #| Note that classes will have "LocalTime::" prefixed to their names.
 
+    #| Formatter class names are random until @tonyo or other person 
+    #| can improve on that.
+
+    my $class = self.uuid2cname("{uuid-v4}");
     use MONKEY-SEE-NO-EVAL;
-    if self.fclass{$class}:exists {
-        # return it
-        return self.fclass{$class};
-    }
     my $fmt = qq:to/HERE/;
     class $class does Callable \{
     HERE
@@ -189,5 +189,26 @@ method gen-fmt-class(
     }
     HERE
     $fmt .= chomp;
-    EVAL $fmt
+    #EVAL $fmt
+    $fmt = EVAL $fmt;
+    my $formatter = $fmt.new; 
+    $formatter
 } # sub gen-fmt-class
+
+method uuid2cname($uuid --> Str) {
+    my $cname = $uuid;
+    my $ca = 'a'..'z';
+    my $cA = 'A'..'Z';
+    my @c;
+    @c.push($_) for $ca.list;
+    @c.push($_) for $cA.list;
+    my @p = split '-', $cname;
+    my @cname;
+    while @p.elems {
+        my $c = @c.pick(1);
+        my $p = @p.shift;
+        $p ~~ s/^\d/$c/;
+        @cname.push: $p;
+    }
+    $cname = @cname.join: '-';
+}

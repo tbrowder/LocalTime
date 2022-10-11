@@ -19,7 +19,7 @@
   ],
   "source-url": "https://github.com/tbrowder/LocalTime.git",
   "tags": [
-    "timezone tz data time localtime us"
+    "timezone tz data time localtime us formatter"
   ],
   "test-depends": [
   ],

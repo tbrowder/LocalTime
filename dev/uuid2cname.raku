@@ -9,7 +9,6 @@ sub uuid2cname($uuid --> Str) {
     my @c;
     @c.push($_) for $ca.list;
     @c.push($_) for $cA.list;
-
     my @p = split '-', $cname;
     my @cname;
     while @p.elems {

@@ -1,7 +1,6 @@
 use Test;
 
 use LocalTime;
-use F;
 
 my $o;
 my $m;

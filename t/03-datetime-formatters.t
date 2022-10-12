@@ -1,10 +1,11 @@
 use Test;
 
 use Timezones::US;
+use LocalTime;
 
+my $formatter = LocalTime.new(:2022year, :tz-abbrev).formatter;
 for @tz -> $tz is copy {
     $tz .= uc;
-    my $formatter = $::("F::$tz");
 
     my $dt;
     lives-ok {

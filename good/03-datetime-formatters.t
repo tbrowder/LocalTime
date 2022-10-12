@@ -1,6 +1,5 @@
 use Test;
 
-use F;
 use Timezones::US;
 
 for @tz -> $tz is copy {

@@ -86,3 +86,4 @@ my $c3 = Foo.new: :tz;
 is $c3.mode, 3;
 is $c3.mode2, 3;
 
+done-testing;

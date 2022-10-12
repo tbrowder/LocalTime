@@ -3,8 +3,9 @@
 #| A wrapper around a DateTime object
 unit class LocalTime; 
 
-# to adjust for DST if applicable and use US abbreviations
+# To adjust for DST if applicable and use US abbreviations
 use Timezones::US;
+# To create unique class names for formatter creation
 use UUID::V4;
 
 has          $.tz-abbrev;      # lower case, index into %tzones
@@ -29,11 +30,6 @@ submethod TWEAK(:$tz-abbrev, |c) {
     $!dt = DateTime.new(|c);
 
     #| Working vars to pass to DateTime
-    #|   The default no-info formatter
-    =begin comment
-    my $formatter = $::("F::no-tz-info");
-    =end comment
-
     my $tz-info;   # used for formatter class construction
     my $formatter;
 
@@ -59,18 +55,33 @@ submethod TWEAK(:$tz-abbrev, |c) {
         # $mode 0   not $!tz-abbrev.defined or $!tz-abbrev eq ''
         #             set $tz-info = ''
         $formatter = self.gen-fmt-class;
+        $tz-info   = '';
     }
     elsif $!mode == 1 {
         # $mode 1   $!tz-abbrev = some valid US entry     test $mode2 ~~ Str
         #             set $tz-info = 'CST'
+        $tz-info   = $!TZ-ABBREV;
+        $formatter = self.gen-fmt-class(:$tz-info);
     }
     elsif $!mode == 2 {
         # $mode 2   $!tz-abbrev = some non-valid US entry  test $mode2 ~~ Str
         #             set $tz-info = 'as entered.uc'
+        $tz-info   = $!tz-abbrev-orig.uc;
+        $formatter = self.gen-fmt-class(:$tz-info);
     }
     elsif $!mode == 3 {
         # $mode 3   $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, value True
         #             set $tz-info = 'Local Time (UTC +/-$n hrs)'
+        my $tz-offset = $*TZ div SEC-PER-HOUR;
+        my $sign = '-' if $tz-offset < 0;
+        $sign = '+' if $tz-offset > 0;
+        if $tz-offset {
+            $tz-info = "Local Time (UTC $sign hrs)";
+        }
+        else {
+            $tz-info = "Local Time (UTC)";
+        }
+        $formatter = self.gen-fmt-class(:$tz-info);
     }
     else {
         die "FATAL: Unable to determine a mode."
@@ -92,7 +103,6 @@ submethod TWEAK(:$tz-abbrev, |c) {
             $!dt .= clone(:$formatter);
         }
     }
-
 
 } # end of submethod TWEAK
 
@@ -145,10 +155,19 @@ method !get-mode(:$!tz-abbrev!, :%tzones!) {
 
 =begin comment
 # working vars for modes 0-3
-my $mode0 = 0; # not $!tz-abbrev.defined or $!tz-abbrev eq ''
-my $mode1 = 0; # $!tz-abbrev = some valid US entry     test $mode2 ~~ Str
-my $mode2 = 0; # $!tz-abbrev = some non-valid US entry  test $mode2 ~~ Str
-my $mode3 = 0; # $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, value True
+mode 0: not $!tz-abbrev.defined or $!tz-abbrev eq ''
+        action: set $tz-info = ''
+mode 1: $!tz-abbrev eq some valid US entry     
+        test:   $!tz-abbrev ~~ Str
+        action: set $tz-info = 'CST'
+
+mode 2: $!tz-abbrev eq some non-valid US entry  
+        test:   $!tz-abbrev ~~ Str
+        action: set $tz-info = 'as entered.uc'
+
+mode 3: $!tz-abbrev.defined but no value      
+        test:   $!tz-abbrev $mode4 ~~ Bool, value True
+        action: set $tz-info = 'Local Time (UTC +/-$n hrs)'
 =end comment
 
 method gen-fmt-class(

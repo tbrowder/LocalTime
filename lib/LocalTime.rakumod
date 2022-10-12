@@ -16,6 +16,7 @@ has          $.tz-name = '';
 
 has DateTime $.dt;
 has          $.mode = 0;
+has          $.formatter;
 
 submethod TWEAK(:$tz-abbrev, |c) {
     # trying a better way to determine mode
@@ -91,8 +92,10 @@ submethod TWEAK(:$tz-abbrev, |c) {
     # AFTER the formatter and timezone values have been determined.
     # Clone the original one:
 
-    # SAFETY PLAY
+    $!formatter = $formatter;
+
     if not $formatter.defined {
+        # SAFETY PLAY
         $!dt;
     }
     else {

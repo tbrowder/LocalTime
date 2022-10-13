@@ -6,7 +6,6 @@ my $o;
 my $m;
 my $exp;
 
-=begin comment
 subtest {
     lives-ok {
         $o = DateTime.new: :year(2022);
@@ -24,9 +23,7 @@ subtest {
     $m   = $o.mode;
     $exp = 0;
     is $o.mode, $exp, "mode should be $exp, is mode $m";
-    is $o.tz-abbrev.defined, False;
 }, "subtest B";
-=end comment
 
 subtest {
     # check auto-correction of lower-case entries
@@ -38,7 +35,8 @@ subtest {
     $m = $o.mode;
     $exp = 1;
     is $o.mode, $exp, "mode should be $exp, is mode $m";
-    is $o.tz-abbrev, "CST";
+    is $o.tz-abbrev, "cst";
+    is $o.TZ-ABBREV, "CST";
 }, "subtest C";
 
 subtest {
@@ -51,6 +49,8 @@ subtest {
     $m = $o.mode;
     $exp = 1;
     is $o.mode, $exp, "mode should be $exp, is mode $m";
+    is $o.tz-abbrev, "cst";
+    is $o.TZ-ABBREV, "CST";
 }, "subtest D";
 
 subtest {
@@ -63,6 +63,8 @@ subtest {
     $m = $o.mode;
     $exp = 1;
     is $o.mode, $exp, "mode should be $exp, is mode $m";
+    is $o.tz-abbrev, "cst";
+    is $o.TZ-ABBREV, "CDT";
 }, "subtest E";
 
 done-testing;

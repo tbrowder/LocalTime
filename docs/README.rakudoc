@@ -73,7 +73,7 @@ $ say LocalTime.new: :2022year, :tz-abbrev;
 Note for US TZ entries the user can enter either '*st' or '*dt' (case insensitive) and the correct
 form will be used for the time of year.
 
-Currently only US abbreviations are in the 'use'd B<Timezones::UU> database, but a future modification
+Currently only US abbreviations are in the 'use'd B<Timezones::US> database, but a future modification
 will add others (perhaps in other languages also). PRs are welcome!
 
 =head1 AUTHOR

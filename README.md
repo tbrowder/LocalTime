@@ -48,7 +48,7 @@ DESCRIPTION
 
 Note for US TZ entries the user can enter either '*st' or '*dt' (case insensitive) and the correct form will be used for the time of year.
 
-Currently only US abbreviations are in the database, but a future modification will add others (perhaps in other languages also). PRs are welcome!
+Currently only US abbreviations are in the 'use'd **Timezones::UU** database, but a future modification will add others (perhaps in other languages also). PRs are welcome!
 
 AUTHOR
 ======

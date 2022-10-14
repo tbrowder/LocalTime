@@ -4,11 +4,8 @@ use UUID::V4;
 
 sub uuid2cname($uuid --> Str) {
     my $cname = $uuid;
-    my $ca = 'a'..'z';
-    my $cA = 'A'..'Z';
-    my @c;
-    @c.push($_) for $ca.list;
-    @c.push($_) for $cA.list;
+    my @c = ('a'..'z').list;
+    @c.push: |('A'..'Z').list;
     my @p = split '-', $cname;
     my @cname;
     while @p.elems {
@@ -28,24 +25,4 @@ for 0..^$n {
     say "uuid  '$uuid'";
     say "cname '$cname'";
 }
-
-
-=finish
-my $uuid = uuid-v4;
-say "uuid '$uuid'";
-
-my $cname = $uuid;
-say "cname '$cname'";
-
-$cname ~~ s/^./F/;
-say "cname '$cname'";
-
-$cname ~~ s:g/'-'./-F/;
-say "cname '$cname'";
-
-my $v = $cname;
-say "var   '$v'";
-
-
-
 

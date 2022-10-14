@@ -208,11 +208,10 @@ method gen-fmt-class(
 
 method uuid2cname($uuid --> Str) {
     my $cname = $uuid;
-    my $ca = 'a'..'z';
-    my $cA = 'A'..'Z';
-    my @c;
-    @c.push($_) for $ca.list;
-    @c.push($_) for $cA.list;
+
+    my @c = ('a'..'z').list;
+    @c.push: |('A'..'Z').list;
+
     my @p = split '-', $cname;
     my @cname;
     while @p.elems {

@@ -24,6 +24,7 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
     # able to do that with the '.clone' method.
     $!dt = DateTime.new(|c);
 
+    =begin comment
     # working vars for modes 0-3
     my $mode0 = 0; # not $!tz-abbrev.defined or $!tz-abbrev eq ''
                    #   set $tz-info = ''
@@ -33,9 +34,10 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
                    #   set $tz-info = 'as entered.uc'
     my $mode3 = 0; # $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, value True
                    #   set $tz-info = 'Local Time (UTC +/-$n hrs)'
+    =end comment
 
     #| Working vars to pass to DateTime
-    my $tz-info;              # used for formatter class construction
+    my $tz-info;   # used for formatter class construction
     my $formatter;
 
     # the initial entry is kept for possible need for non-US time zone abbrevs
@@ -114,10 +116,10 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
     }
 
     if not $formatter.defined {
-        # SAFETY PLAY
         die "FATAL: No formatter was created.";
     }
 
+    # for debugging and sanity checks
     $!mode = $mode;
 
     # Finally, get a NEW DateTime object for the time components
@@ -130,7 +132,7 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
 
 } # end of submethod TWEAK
 
-# dup the DateTime methods
+# dup DateTime methods
 method year         { self.dt.year         }
 method month        { self.dt.month        }
 method day          { self.dt.day          }
@@ -200,8 +202,9 @@ method gen-fmt-class(
     $fmt = EVAL $fmt;
     my $formatter = $fmt.new;
     $formatter
-} # sub gen-fmt-class
+} # method gen-fmt-class
 
+#| Used to generate unique class names for formatters
 method uuid2cname($uuid --> Str) {
     my $cname = $uuid;
 

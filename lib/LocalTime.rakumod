@@ -96,10 +96,13 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
         # $mode 3   $!tz-abbrev.defined but no value      test $mode3 ~~ Bool, value True
         #             set $tz-info = 'Local Time (UTC +/-$n hrs)'
         my $tz-offset = $*TZ div SEC-PER-HOUR;
-        my $sign = '' if $tz-offset < 0;
-        $sign = '+' if $tz-offset > 0;
-        if $tz-offset {
-            $tz-info = "Local Time (UTC $sign$tz-offset hrs)";
+        my $H = 'hrs';
+        $H = 'hr' if (-2 < $tz-offset < 2);
+        if $tz-offset < 0 {
+            $tz-info = "Local Time (UTC $tz-offset $H)";
+        }
+        elsif $tz-offset > 0 {
+            $tz-info = "Local Time (UTC +$tz-offset $H)";
         }
         else {
             $tz-info = "Local Time (UTC)";

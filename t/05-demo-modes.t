@@ -34,14 +34,18 @@ subtest {
 }, "subtest 2";
 
 # mode 3
-subtest {
+for -12..12 -> $hh {
+    $*TZ = $hh * 3600;
+
     my $offset = $*TZ div 3600;
     my $res;
+    my $H = 'hrs';
+    $H = 'hr' if (-2 < $offset < 2);
     if $offset < 0 {
-        $res = "Local Time (UTC $offset hrs)";
+        $res = "Local Time (UTC $offset $H)";
     }
     elsif $offset > 0 {
-        $res = "Local Time (UTC +$offset hrs)";
+        $res = "Local Time (UTC +$offset $H)";
     }
     else {
         $res = "Local Time (UTC)";
@@ -51,6 +55,6 @@ subtest {
     $m = $o.mode;
     $exp = 3;
     is $o.mode, $exp, "mode should be $exp, is mode $m";
-}, "subtest 3";
+}
 
 done-testing;

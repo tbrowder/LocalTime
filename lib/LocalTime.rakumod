@@ -37,8 +37,6 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
     #| Working vars to pass to DateTime
     my $tz-info;              # used for formatter class construction
     my $formatter;
-    #|   The default timezone
-    my $timezone;             # don't define it unless needed (is it ever needed?)
 
     # the initial entry is kept for possible need for non-US time zone abbrevs
     $!tz-abbrev-orig = $tz-abbrev;
@@ -95,13 +93,13 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
     }
     elsif $!tz-abbrev ~~ Bool {
         $mode = 3;
-        # $mode 3   $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, value True
+        # $mode 3   $!tz-abbrev.defined but no value      test $mode3 ~~ Bool, value True
         #             set $tz-info = 'Local Time (UTC +/-$n hrs)'
         my $tz-offset = $*TZ div SEC-PER-HOUR;
-        my $sign = '-' if $tz-offset < 0;
+        my $sign = '' if $tz-offset < 0;
         $sign = '+' if $tz-offset > 0;
         if $tz-offset {
-            $tz-info = "Local Time (UTC $sign hrs)";
+            $tz-info = "Local Time (UTC $sign$tz-offset hrs)";
         }
         else {
             $tz-info = "Local Time (UTC)";
@@ -125,12 +123,7 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
 
     # save the formatter for external use with a DateTime object
     $!formatter = $formatter;
-    if not $timezone.defined {
-        $!dt .= clone(:$formatter);
-    }
-    else {
-        $!dt .= clone(:$timezone, :$formatter);
-    }
+    $!dt .= clone(:$formatter);
 
 } # end of submethod TWEAK
 

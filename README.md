@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/tbrowder/LocalTime/actions/workflows/test.yml/badge.svg)](https://github.com/tbrowder/LocalTime/actions)
+[![Actions Status](https://github.com/tbrowder/LocalTime/actions/workflows/linux.yml/badge.svg)](https://github.com/tbrowder/LocalTime/actions) [![Actions Status](https://github.com/tbrowder/LocalTime/actions/workflows/macos.yml/badge.svg)](https://github.com/tbrowder/LocalTime/actions) [![Actions Status](https://github.com/tbrowder/LocalTime/actions/workflows/windows.yml/badge.svg)](https://github.com/tbrowder/LocalTime/actions)
 
 NAME
 ====

@@ -28,11 +28,11 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
     # working vars for modes 0-3
     my $mode0 = 0; # not $!tz-abbrev.defined or $!tz-abbrev eq ''
                    #   set $tz-info = ''
-    my $mode1 = 0; # $!tz-abbrev = some valid US entry     test $mode2 ~~ Str
+    my $mode1 = 0; # $!tz-abbrev = some valid US entry; test $mode2 ~~ Str
                    #   set $tz-info = 'CST'
-    my $mode2 = 0; # $!tz-abbrev = some non-valid US entry  test $mode2 ~~ Str
+    my $mode2 = 0; # $!tz-abbrev = some non-valid US entry; test $mode2 ~~ Str
                    #   set $tz-info = 'as entered.uc'
-    my $mode3 = 0; # $!tz-abbrev.defined but no value      test $mode4 ~~ Bool, value True
+    my $mode3 = 0; # $!tz-abbrev.defined but no value; test $mode4 ~~ Bool, value True
                    #   set $tz-info = 'Local Time (UTC +/-$n hrs)'
     =end comment
 
@@ -67,7 +67,7 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
         # note we have NOT determined the actual DST status yet
         if %tzones{$tz-abbrev}:exists {
             $mode = 1;
-            # $mode 1   $!tz-abbrev = some valid US entry     test $mode2 ~~ Str
+            # $mode 1   $!tz-abbrev = some valid US entry; test $mode2 ~~ Str
             #             set $tz-info = 'CST'
             # check DST status
             if is-dst(:localtime($!dt.local)) {
@@ -87,7 +87,7 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
         }
         else {
             $mode = 2;
-            # $mode 2   $!tz-abbrev = some non-valid US entry  test $mode2 ~~ Str
+            # $mode 2   $!tz-abbrev = some non-valid US entry; test $mode2 ~~ Str
             #             set $tz-info = 'as entered.uc'
             $tz-info   = $!tz-abbrev-orig.uc;
             $formatter = self.gen-fmt-class(:$tz-info);
@@ -95,7 +95,7 @@ submethod TWEAK(:$tz-abbrev is copy, |c) {
     }
     elsif $!tz-abbrev ~~ Bool {
         $mode = 3;
-        # $mode 3   $!tz-abbrev.defined but no value      test $mode3 ~~ Bool, value True
+        # $mode 3   $!tz-abbrev.defined but no value; test $mode3 ~~ Bool, value True
         #             set $tz-info = 'Local Time (UTC +/-$n hrs)'
         my $tz-offset = $*TZ div SEC-PER-HOUR;
         my $H = 'hrs';
@@ -141,6 +141,7 @@ method minute       { self.dt.minute       }
 method second       { self.dt.second       }
 method timezone     { self.dt.timezone     }
 method Str          { self.dt.Str          }
+method gist         { self.dt.Str          }
 method local        { self.dt.local        }
 method hh-mm-ss     { self.dt.hh-mm-ss     }
 method offset       { self.dt.offset       }

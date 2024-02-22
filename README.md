@@ -28,23 +28,23 @@ DESCRIPTION
 
   * The default format for `LocalTime` with no time zone entry:
 
-        $ say LocalTime.new: :2022year;
-        2022-01-01T00:00:00 # <== note no trailing 'Z'
+        $ say LocalTime.new(:2024year);
+        2024-01-01T00:00:00 # <== note no trailing 'Z'
 
   * The default format for `LocalTime` with 'CST' entered:
 
-        $ say LocalTime.new: :2022year, :tz-abbrev('CST');
-        2022-01-01T00:00:00 CST
+        $ say LocalTime.new(:2024year, :tz-abbrev<CST>);
+        2024-01-01T00:00:00 CST
 
   * The format for `LocalTime` with a non-US TZ abbreviation entered:
 
-        $ say LocalTime.new: :2022year, :tz-abbrev('XYT');
-        2022-01-01T00:00:00 XYT
+        $ say LocalTime.new(:2024year, :tz-abbrev<XYT>);
+        2024-01-01T00:00:00 XYT
 
   * The format for `LocalTime` with an empty `:tz-abbrev` named argument entered:
 
-        $ say LocalTime.new: :2022year, :tz-abbrev;
-        2022-01-01T00:00:00 Local Time (UTC -4 hrs)
+        $ say LocalTime.new(:2024year, :tz-abbrev);
+        2024-01-01T00:00:00 Local Time (UTC -6 hrs)
 
 Note for US TZ entries the user can enter either '*st' or '*dt' (case insensitive) and the correct form will be used for the time of year.
 

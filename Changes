@@ -1,6 +1,8 @@
 Revision history for LocalTime
 
 {{$NEXT}}
+
+0.0.3  2024-02-22T10:38:05-06:00
     - Correct examples in README
     - Add missing .gist method so { say LocalTime.new: :2024year; } works
     - Reference its use in module 'DateTime::US'

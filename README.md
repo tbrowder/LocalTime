@@ -21,8 +21,8 @@ DESCRIPTION
 
   * The default format for `DateTime`:
 
-        $ say DateTime.new: :2022year;
-        2022-01-01T00:00:00Z
+        $ say DateTime.new: :2024year;
+        2024-01-01T00:00:00Z
 
 ### class LocalTime
 

@@ -27,8 +27,8 @@ input conditions:
 The default format for C<DateTime>:
 
 =begin code
-$ say DateTime.new: :2022year;
-2022-01-01T00:00:00Z
+$ say DateTime.new: :2024year;
+2024-01-01T00:00:00Z
 =end code
 =end item
 

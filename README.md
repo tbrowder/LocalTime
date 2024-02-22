@@ -46,7 +46,7 @@ DESCRIPTION
         $ say LocalTime.new(:2024year, :tz-abbrev);
         2024-01-01T00:00:00 Local Time (UTC -6 hrs)
 
-Note for US TZ entries the user can enter either '*st' or '*dt' (case insensitive) and the correct form will be used for the time of year.
+Note for US TZ entries the user can enter either '*st' or '*dt' (case insensitive) and the correct form will be used for the time of year. This module is used to good effect in module `DateTime::US` to get the desired time zone abbreviation in its `.to-localtime` method.
 
 Currently only US abbreviations are in the 'use'd **Timezones::US** database, but a future modification will add others (perhaps in other languages also). PRs are welcome!
 

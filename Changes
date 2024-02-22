@@ -1,6 +1,9 @@
 Revision history for LocalTime
 
 {{$NEXT}}
+    - Correct examples in README
+    - Add missing .gist method so { say LocalTime.new: :2024year; } works
+    - Reference its use in module 'DateTime::US'
 
 0.0.2  2024-02-19T05:40:49-06:00
     - Add 3-OS workflows tests
